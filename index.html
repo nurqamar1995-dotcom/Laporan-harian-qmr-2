@@ -5,303 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan & Monitoring Toko Harian</title>
     <style>
-        :root {
-            --primary: #0f766e;
-            --primary-hover: #0d9488;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-            --border: #cbd5e1;
-            --accent-bg: #f8fafc;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-dark);
-            margin: 0;
-            padding: 12px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .header-title {
-            text-align: center;
-            background: linear-gradient(135deg, #0f766e, #0284c7);
-            color: white;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .watermark {
-            font-size: 0.75em;
-            opacity: 0.85;
-            font-style: italic;
-            margin-bottom: 2px;
-            letter-spacing: 0.5px;
-        }
-
-        .header-title h2 {
-            margin: 0;
-            font-size: 1.3em;
-        }
-
-        /* NAVIGATION TABS */
-        .tab-nav {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 14px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            background-color: #e2e8f0;
-            color: var(--text-dark);
-            font-weight: 700;
-            font-size: 0.9em;
-            border-radius: 8px;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 2px 4px rgba(15, 118, 110, 0.2);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            margin-bottom: 14px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .section-title {
-            font-weight: 700;
-            font-size: 0.95em;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border-bottom: 2px solid #ccfbf1;
-            padding-bottom: 6px;
-        }
-
-        .form-group {
-            margin-bottom: 10px;
-        }
-
-        label {
-            display: block;
-            font-size: 0.82em;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--text-dark);
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 0.95em;
-            background-color: #fff;
-            color: var(--text-dark);
-            transition: all 0.2s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-        }
-
-        .readonly-input {
-            background-color: #f1f5f9;
-            color: #334155;
-            font-weight: 700;
-            border-color: #cbd5e1;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-primary {
-            background-color: #10b981;
-            color: white;
-            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-        }
-
-        .btn-primary:active {
-            background-color: #059669;
-        }
-
-        .btn-wa {
-            background-color: #25d366;
-            color: white;
-            margin-top: 8px;
-        }
-
-        .btn-wa:active {
-            background-color: #1ebd56;
-        }
-
-        .btn-secondary {
-            background-color: #0284c7;
-            color: white;
-            margin-top: 10px;
-        }
-
-        .btn-secondary:active {
-            background-color: #0369a1;
-        }
-
-        .btn-excel {
-            background-color: #059669;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .btn-reset {
-            background-color: #ef4444;
-            color: white;
-            margin-top: 12px;
-        }
-
-        .btn-reset:active {
-            background-color: #dc2626;
-        }
-
-        .preview-box {
-            white-space: pre-wrap;
-            background: #1e293b;
-            color: #38bdf8;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.88em;
-            max-height: 220px;
-            overflow-y: auto;
-            border: 1px solid #334155;
-            line-height: 1.4;
-        }
-
-        details summary {
-            font-weight: 700;
-            cursor: pointer;
-            padding: 4px 0;
-            color: var(--primary);
-            font-size: 0.9em;
-        }
-
-        .field-block {
-            background: var(--accent-bg);
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid #f1f5f9;
-            margin-bottom: 8px;
-        }
-
-        /* STYLING TABEL MONITORING */
-        .table-responsive {
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82em;
-            text-align: center;
-            background-color: #fff;
-        }
-
-        th {
-            background-color: #0f766e;
-            color: white;
-            padding: 8px 4px;
-            font-weight: 600;
-            border: 1px solid #0d9488;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 7px 4px;
-            border: 1px solid #e2e8f0;
-            white-space: nowrap;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-
-        .tr-subtotal {
-            background-color: #e0f2fe !important;
-            font-weight: 700;
-            color: #0369a1;
-        }
-
-        .tr-grandtotal {
-            background-color: #fef08a !important;
-            font-weight: 800;
-            color: #854d0e;
-        }
-
-        .btn-delete-row {
-            background-color: #fee2e2;
-            color: #ef4444;
-            border: none;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.75em;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        :root { --primary: #0f766e; --bg: #f1f5f9; --card-bg: #ffffff; --text-dark: #1e293b; --border: #cbd5e1; --accent-bg: #f8fafc; }
+        body { font-family: sans-serif; background-color: var(--bg); color: var(--text-dark); margin: 0; padding: 12px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header-title { text-align: center; background: linear-gradient(135deg, #0f766e, #0284c7); color: white; padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .watermark { font-size: 0.75em; opacity: 0.85; font-style: italic; margin-bottom: 2px; }
+        .header-title h2 { margin: 0; font-size: 1.3em; }
+        .tab-nav { display: flex; gap: 6px; margin-bottom: 14px; }
+        .tab-btn { flex: 1; padding: 10px; background-color: #e2e8f0; font-weight: 700; border-radius: 8px; cursor: pointer; border: none; }
+        .tab-btn.active { background-color: var(--primary); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .card { background: var(--card-bg); padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 14px; }
+        .section-title { font-weight: 700; font-size: 0.95em; color: var(--primary); border-bottom: 2px solid #ccfbf1; padding-bottom: 6px; margin-bottom: 12px; }
+        .form-group { margin-bottom: 10px; }
+        label { font-size: 0.82em; font-weight: 600; margin-bottom: 4px; display: block; }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .btn-primary { background-color: #10b981; color: white; }
+        .btn-wa { background-color: #25d366; color: white; }
+        .btn-secondary { background-color: #0284c7; color: white; }
+        .btn-excel { background-color: #059669; color: white; }
+        .preview-box { white-space: pre-wrap; background: #1e293b; color: #38bdf8; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.88em; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8em; text-align: center; }
+        th { background-color: var(--primary); color: white; padding: 8px; }
+        td { padding: 8px; border: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
@@ -312,637 +42,112 @@
         <h2>📊 Laporan Toko Harian</h2>
     </div>
 
-    <!-- TAB NAVIGATION -->
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('tab-laporan', this)">📝 Input Laporan</button>
         <button class="tab-btn" onclick="switchTab('tab-monitoring', this)">📊 Monitoring PPS</button>
     </div>
 
-    <!-- TAB 1: INPUT LAPORAN -->
     <div id="tab-laporan" class="tab-content active">
-        <!-- SETTING TARGET SHIFT -->
         <div class="card">
-            <details>
-                <summary>⚙️ Pengaturan Target Shift (Klik di Sini)</summary>
-                <div style="margin-top: 12px;">
-                    <div class="form-group">
-                        <label>Pilih Shift yang Ingin Diatur:</label>
-                        <select id="targetShiftSelect" onchange="loadTargetPreset()">
-                            <option value="1">Shift 1</option>
-                            <option value="2">Shift 2</option>
-                            <option value="3">Shift 3 (Khusus 24 Jam)</option>
-                        </select>
-                    </div>
-                    <div class="grid-2">
-                        <div class="form-group"><label>Target SPD</label><input type="text" id="t_spd" placeholder="3.158.200" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target STD</label><input type="text" id="t_std" placeholder="128" oninput="formatRupiahInput(this)"></div>
-                    </div>
-                    <div class="grid-2">
-                        <div class="form-group"><label>Target STD Member</label><input type="text" id="t_std_mbr" placeholder="99" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target New Member</label><input type="text" id="t_new_mbr" placeholder="1" oninput="formatRupiahInput(this)"></div>
-                    </div>
-                    <div class="grid-2">
-                        <div class="form-group"><label>Target PWP</label><input type="text" id="t_pwp" placeholder="12" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target PSM</label><input type="text" id="t_psm" placeholder="30" oninput="formatRupiahInput(this)"></div>
-                    </div>
-                    <div class="grid-2">
-                        <div class="form-group"><label>Target Sergas</label><input type="text" id="t_sergas" placeholder="10" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target Segarrrrr</label><input type="text" id="t_segarr" placeholder="10" oninput="formatRupiahInput(this)"></div>
-                    </div>
-                    <div class="grid-2">
-                        <div class="form-group"><label>Target Ceban</label><input type="text" id="t_ceban" placeholder="0" oninput="formatRupiahInput(this)"></div>
-                    </div>
-                    <button class="btn btn-secondary" onclick="saveTargetPreset()">Simpan Target Shift</button>
-                </div>
-            </details>
-        </div>
-
-        <!-- FORM INPUT LAPORAN -->
-        <div class="card">
-            <div class="section-title">📌 Informasi Umum</div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Tanggal</label>
-                    <input type="text" id="tgl" placeholder="13/08/26" oninput="hitung()">
-                </div>
-                <div class="form-group">
-                    <label>Kode Toko / Toko</label>
-                    <input type="text" id="kode_toko" placeholder="R017 /MGki" oninput="saveKodeToko(); hitung()">
-                </div>
+            <div class="form-group">
+                <label>Tanggal</label> <input type="text" id="tgl" oninput="hitung()">
+            </div>
+            <div class="form-group">
+                <label>Kode Toko</label> <input type="text" id="kode_toko" oninput="saveKodeToko(); hitung()">
             </div>
             <div class="grid-2">
-                <div class="form-group">
-                    <label>Shift</label>
-                    <select id="shift" onchange="applyShiftTarget()">
-                        <option value="1">Shift 1</option>
-                        <option value="2">Shift 2</option>
-                        <option value="3">Shift 3</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Staf / Crew</label>
-                    <input type="text" id="crew" placeholder="Qamar/Salsa" oninput="hitung()">
-                </div>
+                <div class="form-group"><label>Shift</label><select id="shift" onchange="hitung()"><option value="1">Shift 1</option><option value="2">Shift 2</option><option value="3">Shift 3</option></select></div>
+                <div class="form-group"><label>Crew</label><input type="text" id="crew" oninput="hitung()"></div>
             </div>
-
-            <!-- METRIK UTAMA -->
-            <div class="section-title" style="margin-top: 15px;">📊 Target / Actual / ACV%</div>
-            
-            <div class="field-block">
-                <label>SPD (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_spd" placeholder="Target SPD" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_spd" placeholder="Actual SPD" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <div class="field-block">
-                <label>STD (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_std" placeholder="Target STD" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_std" placeholder="Actual STD" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <div class="field-block">
-                <label>STD Member (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_std_mbr" placeholder="Target Member" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_std_mbr" placeholder="Actual Member" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <div class="field-block">
-                <label>New Member (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_new_mbr" placeholder="Target New Mbr" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_new_mbr" placeholder="Actual New Mbr" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <!-- PPS TARGET / ACTUAL -->
-            <div class="section-title" style="margin-top: 15px;">📈 PPS Target / Actual / ACV%</div>
-
-            <div class="field-block">
-                <label>APC (Otomatis: SPD / STD)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_apc" class="readonly-input" readonly placeholder="Target APC">
-                    <input type="text" id="actual_apc" class="readonly-input" readonly placeholder="Actual APC">
-                </div>
-            </div>
-
-            <div class="field-block">
-                <label>PWP (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_pwp" placeholder="Target PWP" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_pwp" placeholder="Actual PWP" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <div class="field-block">
-                <label>PSM (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_psm" placeholder="Target PSM" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_psm" placeholder="Actual PSM" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <div class="field-block">
-                <label>Sergas (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_sergas" placeholder="Target Sergas" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_sergas" placeholder="Actual Sergas" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <div class="field-block">
-                <label>Segarrrrr (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_segarr" placeholder="Target Segarrrrr" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_segarr" placeholder="Actual Segarrrrr" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <div class="field-block">
-                <label>Ceban... (Target / Actual)</label>
-                <div class="grid-2">
-                    <input type="text" id="target_ceban" placeholder="Target Ceban" oninput="formatRupiahInput(this); hitung()">
-                    <input type="text" id="actual_ceban" placeholder="Actual Ceban" oninput="formatRupiahInput(this); hitung()">
-                </div>
-            </div>
-
-            <!-- PERFOAM / KONDISI BARANG -->
-            <div class="section-title" style="margin-top: 15px;">📉 Perfoam</div>
-            <div class="grid-3">
-                <div>
-                    <label>KOREKSI</label>
-                    <input type="text" id="koreksi" placeholder="-" oninput="formatKoreksiInput(this); hitung()">
-                </div>
-                <div>
-                    <label>BKE</label>
-                    <input type="text" id="bke" value="0" oninput="hitung()">
-                </div>
-                <div>
-                    <label>BR</label>
-                    <input type="text" id="br" value="0" oninput="hitung()">
-                </div>
-            </div>
-
-            <button class="btn btn-reset" onclick="resetFormActual()">🔄 Reset Input Actual</button>
+            <div class="form-group"><label>Actual PSM</label><input type="text" id="actual_psm" oninput="hitung()"></div>
+            <div class="form-group"><label>Actual PWP</label><input type="text" id="actual_pwp" oninput="hitung()"></div>
+            <div class="form-group"><label>Actual Sergas</label><input type="text" id="actual_sergas" oninput="hitung()"></div>
+            <div class="form-group"><label>Actual Segarr</label><input type="text" id="actual_segarr" oninput="hitung()"></div>
+            <div class="form-group"><label>Actual New Mbr</label><input type="text" id="actual_new_mbr" oninput="hitung()"></div>
         </div>
-
-        <!-- PREVIEW DAN TOMBOL COPY -->
         <div class="card">
-            <div class="section-title">📋 Preview Laporan WA</div>
             <div class="preview-box" id="preview"></div>
-            <button class="btn btn-primary" style="margin-top: 12px;" onclick="copyWA()">📋 Copy Ke Clipboard</button>
-            <button class="btn btn-wa" onclick="shareToWA()">📱 Kirim ke WhatsApp</button>
+            <button class="btn btn-primary" onclick="copyWA()">📋 Copy Laporan</button>
+            <button class="btn btn-wa" onclick="shareToWA()">📱 Kirim WhatsApp</button>
         </div>
     </div>
 
-    <!-- TAB 2: MONITORING PPS -->
     <div id="tab-monitoring" class="tab-content">
         <div class="card">
-            <div class="section-title">📊 Monitoring Harian PPS</div>
-            <button class="btn btn-excel" onclick="exportToExcel()">📋 Copy Format Spreadsheet/Excel</button>
-            
-            <div class="table-responsive">
+            <button class="btn btn-excel" onclick="exportToExcel()">📋 Copy Format Excel</button>
+            <button class="btn btn-secondary" onclick="fetchOnlineMonitoringTable()">🔄 Refresh Data</button>
+            <div class="table-responsive" style="margin-top:10px;">
                 <table id="monitoringTable">
-                    <thead>
-                        <tr>
-                            <th>Tgl</th>
-                            <th>Shift</th>
-                            <th>PSM</th>
-                            <th>PWP</th>
-                            <th>Sergas</th>
-                            <th>Segarr</th>
-                            <th>New Mbr</th>
-                            <th class="no-export">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="monitoringTableBody">
-                        <!-- Data otomatis terisi dari JavaScript -->
-                    </tbody>
+                    <thead><tr><th>Tgl</th><th>Shift</th><th>PSM</th><th>PWP</th><th>Sergas</th><th>Segarr</th><th>New Mbr</th></tr></thead>
+                    <tbody id="monitoringTableBody"></tbody>
                 </table>
             </div>
-            <button class="btn btn-reset" style="margin-top:16px;" onclick="clearMonitoringData()">🗑️ Hapus Semua Riwayat Data</button>
         </div>
     </div>
 </div>
 
 <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfAJwDgwKZh_iL19zyngJAeG7-MwynNsmVJlCkzRLBt5AnKq8lxci4PEjPe-FUum8i/exec";
+
     function switchTab(tabId, el) {
         document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         el.classList.add('active');
-        if (tabId === 'tab-monitoring') {
-            renderMonitoringTable();
-        }
+        if (tabId === 'tab-monitoring') fetchOnlineMonitoringTable();
     }
 
-    function formatRupiahInput(el) {
-        let val = el.value.replace(/\D/g, "");
-        if (val === "") {
-            el.value = "";
-            return;
-        }
-        el.value = parseInt(val, 10).toLocaleString("id-ID");
-    }
-
-    function formatKoreksiInput(el) {
-        let raw = el.value.trim();
-        if (raw === "" || raw === "-") return;
-
-        let prefix = "";
-        if (raw.startsWith("-")) {
-            prefix = "-";
-        } else if (raw.startsWith("+")) {
-            prefix = "+";
-        }
-
-        let numStr = raw.replace(/\D/g, "");
-        if (numStr === "") {
-            el.value = prefix;
-            return;
-        }
-
-        let formattedNum = parseInt(numStr, 10).toLocaleString("id-ID");
-        el.value = prefix + formattedNum;
-    }
-
-    function getCleanNum(id) {
-        let val = document.getElementById(id).value;
-        if (!val) return 0;
-        return parseFloat(val.replace(/\./g, "").replace("+", "")) || 0;
-    }
-
-    function getRawStr(id) {
-        return document.getElementById(id).value.trim();
-    }
-
-    function fmt(val) {
-        if (val === "" || val === null || isNaN(val)) return "";
-        let num = Math.round(val);
-        return num.toLocaleString("id-ID");
-    }
-
-    function calcAcv(targetNum, actualNum) {
-        if (!targetNum || isNaN(actualNum) || actualNum === 0) {
-            if (targetNum && actualNum === 0) return "0%";
-            return "";
-        }
-        let acv = (actualNum / targetNum) * 100;
-        return Number.isInteger(acv) ? acv + "%" : acv.toFixed(2).replace('.', ',') + "%";
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const yy = String(today.getFullYear()).slice(-2);
-        document.getElementById("tgl").value = `${dd}/${mm}/${yy}`;
-        
-        const savedKodeToko = localStorage.getItem("saved_kode_toko");
-        if (savedKodeToko) {
-            document.getElementById("kode_toko").value = savedKodeToko;
-        }
-
-        loadTargetPreset();
-        applyShiftTarget();
-        renderMonitoringTable();
-    });
-
-    function saveKodeToko() {
-        let kt = document.getElementById("kode_toko").value;
-        localStorage.setItem("saved_kode_toko", kt);
-    }
-
-    function saveTargetPreset() {
-        const shiftNum = document.getElementById("targetShiftSelect").value;
-        const targetData = {
-            spd: document.getElementById("t_spd").value,
-            std: document.getElementById("t_std").value,
-            std_mbr: document.getElementById("t_std_mbr").value,
-            new_mbr: document.getElementById("t_new_mbr").value,
-            pwp: document.getElementById("t_pwp").value,
-            psm: document.getElementById("t_psm").value,
-            sergas: document.getElementById("t_sergas").value,
-            segarr: document.getElementById("t_segarr").value,
-            ceban: document.getElementById("t_ceban").value
-        };
-        localStorage.setItem("target_shift_" + shiftNum, JSON.stringify(targetData));
-        alert("Target Shift " + shiftNum + " Berhasil Disimpan!");
-        applyShiftTarget();
-    }
-
-    function loadTargetPreset() {
-        const shiftNum = document.getElementById("targetShiftSelect").value;
-        const saved = localStorage.getItem("target_shift_" + shiftNum);
-        if (saved) {
-            const data = JSON.parse(saved);
-            document.getElementById("t_spd").value = data.spd || "";
-            document.getElementById("t_std").value = data.std || "";
-            document.getElementById("t_std_mbr").value = data.std_mbr || "";
-            document.getElementById("t_new_mbr").value = data.new_mbr || "";
-            document.getElementById("t_pwp").value = data.pwp || "";
-            document.getElementById("t_psm").value = data.psm || "";
-            document.getElementById("t_sergas").value = data.sergas || "";
-            document.getElementById("t_segarr").value = data.segarr || "";
-            document.getElementById("t_ceban").value = data.ceban || "";
-        } else {
-            document.getElementById("t_spd").value = "";
-            document.getElementById("t_std").value = "";
-            document.getElementById("t_std_mbr").value = "";
-            document.getElementById("t_new_mbr").value = "";
-            document.getElementById("t_pwp").value = "";
-            document.getElementById("t_psm").value = "";
-            document.getElementById("t_sergas").value = "";
-            document.getElementById("t_segarr").value = "";
-            document.getElementById("t_ceban").value = "";
-        }
-    }
-
-    function applyShiftTarget() {
-        const currentShift = document.getElementById("shift").value;
-        const saved = localStorage.getItem("target_shift_" + currentShift);
-        if (saved) {
-            const data = JSON.parse(saved);
-            document.getElementById("target_spd").value = data.spd || "";
-            document.getElementById("target_std").value = data.std || "";
-            document.getElementById("target_std_mbr").value = data.std_mbr || "";
-            document.getElementById("target_new_mbr").value = data.new_mbr || "";
-            document.getElementById("target_pwp").value = data.pwp || "";
-            document.getElementById("target_psm").value = data.psm || "";
-            document.getElementById("target_sergas").value = data.sergas || "";
-            document.getElementById("target_segarr").value = data.segarr || "";
-            document.getElementById("target_ceban").value = data.ceban || "";
-        } else {
-            document.getElementById("target_spd").value = "";
-            document.getElementById("target_std").value = "";
-            document.getElementById("target_std_mbr").value = "";
-            document.getElementById("target_new_mbr").value = "";
-            document.getElementById("target_pwp").value = "";
-            document.getElementById("target_psm").value = "";
-            document.getElementById("target_sergas").value = "";
-            document.getElementById("target_segarr").value = "";
-            document.getElementById("target_ceban").value = "";
-        }
-        hitung();
-    }
+    function saveKodeToko() { localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value); }
 
     function hitung() {
-        let t_spd = getCleanNum("target_spd");
-        let a_spd = getCleanNum("actual_spd");
-        let t_std = getCleanNum("target_std");
-        let a_std = getCleanNum("actual_std");
-
-        let t_apc = (t_spd > 0 && t_std > 0) ? Math.round(t_spd / t_std) : 0;
-        let a_apc = (a_spd > 0 && a_std > 0) ? Math.round(a_spd / a_std) : 0;
-
-        document.getElementById("target_apc").value = t_apc ? fmt(t_apc) : "";
-        document.getElementById("actual_apc").value = a_apc ? fmt(a_apc) : "";
-
-        let text = `Tgl ${getRawStr("tgl")}\n`;
-        let kodeToko = getRawStr("kode_toko");
-        if (kodeToko) {
-            text += `Kode toko / Toko : ${kodeToko}\n`;
-        }
-        text += `Shif : ${getRawStr("shift")}\n`;
-        text += `Staf / crew : ${getRawStr("crew")}\n`;
-        text += `*Target /actual/avc%*\n`;
-
-        let spd_t_str = getRawStr("target_spd");
-        let spd_a_str = getRawStr("actual_spd");
-        text += `SPD: ${spd_t_str}/${spd_a_str}/${calcAcv(t_spd, a_spd)}\n`;
-
-        let std_t_str = getRawStr("target_std");
-        let std_a_str = getRawStr("actual_std");
-        text += `STD: ${std_t_str}/${std_a_str}/${calcAcv(t_std, a_std)}\n`;
-
-        let std_m_t = getCleanNum("target_std_mbr");
-        let std_m_a = getCleanNum("actual_std_mbr");
-        text += `STD Member: ${getRawStr("target_std_mbr")}/${getRawStr("actual_std_mbr")}/${calcAcv(std_m_t, std_m_a)}\n`;
-
-        let new_m_t = getCleanNum("target_new_mbr");
-        let new_m_a = getCleanNum("actual_new_mbr");
-        let new_m_acv = calcAcv(new_m_t, new_m_a);
-        text += `New member : ${getRawStr("target_new_mbr")}/${getRawStr("actual_new_mbr")}${new_m_acv ? '/' + new_m_acv : ''}\n`;
-
-        text += `📈*Pps target / actual/ACV%*\n`;
-        text += `Apc : ${fmt(t_apc)}/${fmt(a_apc)}/${calcAcv(t_apc, a_apc)}\n`;
-
-        let pwp_t = getCleanNum("target_pwp");
-        let pwp_a = getCleanNum("actual_pwp");
-        text += `Pwp: ${getRawStr("target_pwp")}/${getRawStr("actual_pwp")}/${calcAcv(pwp_t, pwp_a)}\n`;
-
-        let psm_t = getCleanNum("target_psm");
-        let psm_a = getCleanNum("actual_psm");
-        text += `PSM: ${getRawStr("target_psm")}/${getRawStr("actual_psm")}/${calcAcv(psm_t, psm_a)}\n`;
-
-        let sergas_t = getCleanNum("target_sergas");
-        let sergas_a = getCleanNum("actual_sergas");
-        text += `Sergas: ${getRawStr("target_sergas")}/${getRawStr("actual_sergas")}/${calcAcv(sergas_t, sergas_a)}\n`;
-
-        let segarr_t = getCleanNum("target_segarr");
-        let segarr_a = getCleanNum("actual_segarr");
-        text += `Segarrrrr: ${getRawStr("target_segarr")}/${getRawStr("actual_segarr")}/${calcAcv(segarr_t, segarr_a)}\n`;
-
-        let ceban_t = getCleanNum("target_ceban");
-        let ceban_a = getCleanNum("actual_ceban");
-        let ceban_t_str = getRawStr("target_ceban");
-        let ceban_a_str = getRawStr("actual_ceban");
-        let ceban_acv = calcAcv(ceban_t, ceban_a);
-        
-        if (ceban_t_str || ceban_a_str) {
-            text += `Ceban...: ${ceban_t_str || '0'}/${ceban_a_str || '0'}${ceban_acv ? '/' + ceban_acv : ''}\n\n`;
-        } else {
-            text += `Ceban...: 0\n\n`;
-        }
-
-        text += `📉Perfoam \n`;
-        text += `KOREKSI : ${getRawStr("koreksi") || '-'}\n`;
-        text += `BKE: ${getRawStr("bke") || '0'}\n`;
-        text += `BR: ${getRawStr("br") || '0'}`;
-
+        let text = `Tgl ${document.getElementById("tgl").value}\nKode Toko: ${document.getElementById("kode_toko").value}\nShift: ${document.getElementById("shift").value}\nCrew: ${document.getElementById("crew").value}\nPSM: ${document.getElementById("actual_psm").value}\nPWP: ${document.getElementById("actual_pwp").value}`;
         document.getElementById("preview").innerText = text;
     }
 
-    function resetFormActual() {
-        if (confirm("Kosongkan semua inputan Actual untuk laporan baru?")) {
-            const actualIds = ["actual_spd", "actual_std", "actual_std_mbr", "actual_new_mbr", "actual_pwp", "actual_psm", "actual_sergas", "actual_segarr", "actual_ceban"];
-            actualIds.forEach(id => document.getElementById(id).value = "");
-            document.getElementById("koreksi").value = "";
-            document.getElementById("bke").value = "0";
-            document.getElementById("br").value = "0";
-            document.getElementById("crew").value = "";
-            hitung();
-        }
+    function saveToOnline() {
+        let data = {
+            kode_toko: document.getElementById("kode_toko").value,
+            tgl: document.getElementById("tgl").value,
+            shift: document.getElementById("shift").value,
+            crew: document.getElementById("crew").value,
+            psm: document.getElementById("actual_psm").value,
+            pwp: document.getElementById("actual_pwp").value,
+            sergas: document.getElementById("actual_sergas").value,
+            segarr: document.getElementById("actual_segarr").value,
+            new_mbr: document.getElementById("actual_new_mbr").value
+        };
+        fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: {"Content-Type": "application/json"}, body: JSON.stringify(data) });
     }
 
-    function saveToMonitoring() {
-        let tgl = getRawStr("tgl");
-        let shift = getRawStr("shift");
-        let psm = getCleanNum("actual_psm");
-        let pwp = getCleanNum("actual_pwp");
-        let sergas = getCleanNum("actual_sergas");
-        let segarr = getCleanNum("actual_segarr");
-        let new_mbr = getCleanNum("actual_new_mbr");
+    function shareToWA() { saveToOnline(); window.location.href = "whatsapp://send?text=" + encodeURIComponent(document.getElementById("preview").innerText); }
+    function copyWA() { saveToOnline(); navigator.clipboard.writeText(document.getElementById("preview").innerText); alert("Data tersimpan & tercopy!"); }
 
-        if (!tgl) return;
-
-        let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-        
-        dataList = dataList.filter(item => !(item.tgl === tgl && item.shift === shift));
-
-        dataList.push({
-            id: Date.now(),
-            tgl: tgl,
-            shift: shift,
-            psm: psm,
-            pwp: pwp,
-            sergas: sergas,
-            segarr: segarr,
-            new_mbr: new_mbr
-        });
-
-        localStorage.setItem("pps_monitoring_data", JSON.stringify(dataList));
-    }
-
-    function renderMonitoringTable() {
-        let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-        let tbody = document.getElementById("monitoringTableBody");
-        tbody.innerHTML = "";
-
-        if (dataList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="padding:15px; color:#64748b;">Belum ada data tersimpan. Data akan tersimpan otomatis saat Anda menekan tombol Copy atau Kirim WA.</td></tr>`;
-            return;
-        }
-
-        let groupedByTgl = {};
-        dataList.forEach(item => {
-            if (!groupedByTgl[item.tgl]) groupedByTgl[item.tgl] = [];
-            groupedByTgl[item.tgl].push(item);
-        });
-
-        let grandTotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, new_mbr: 0 };
-
-        Object.keys(groupedByTgl).forEach(tgl => {
-            let items = groupedByTgl[tgl];
-            items.sort((a, b) => parseInt(a.shift) - parseInt(b.shift));
-
-            let subtotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, new_mbr: 0 };
-
-            items.forEach(item => {
-                subtotal.psm += item.psm;
-                subtotal.pwp += item.pwp;
-                subtotal.sergas += item.sergas;
-                subtotal.segarr += item.segarr;
-                subtotal.new_mbr += item.new_mbr;
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${item.tgl}</td>
-                        <td>Shift ${item.shift}</td>
-                        <td>${fmt(item.psm)}</td>
-                        <td>${fmt(item.pwp)}</td>
-                        <td>${fmt(item.sergas)}</td>
-                        <td>${fmt(item.segarr)}</td>
-                        <td>${fmt(item.new_mbr)}</td>
-                        <td class="no-export"><button class="btn-delete-row" onclick="deleteSingleRow(${item.id})">✕</button></td>
-                    </tr>
-                `;
+    function fetchOnlineMonitoringTable() {
+        let kt = document.getElementById("kode_toko").value;
+        fetch(`${GOOGLE_SCRIPT_URL}?kode_toko=${encodeURIComponent(kt)}`)
+            .then(res => res.json())
+            .then(data => {
+                let tbody = document.getElementById("monitoringTableBody");
+                tbody.innerHTML = data.map(item => `<tr><td>${item.tgl}</td><td>${item.shift}</td><td>${item.psm}</td><td>${item.pwp}</td><td>${item.sergas}</td><td>${item.segarr}</td><td>${item.new_mbr}</td></tr>`).join("");
             });
-
-            grandTotal.psm += subtotal.psm;
-            grandTotal.pwp += subtotal.pwp;
-            grandTotal.sergas += subtotal.sergas;
-            grandTotal.segarr += subtotal.segarr;
-            grandTotal.new_mbr += subtotal.new_mbr;
-
-            tbody.innerHTML += `
-                <tr class="tr-subtotal">
-                    <td colspan="2">Total (${tgl})</td>
-                    <td>${fmt(subtotal.psm)}</td>
-                    <td>${fmt(subtotal.pwp)}</td>
-                    <td>${fmt(subtotal.sergas)}</td>
-                    <td>${fmt(subtotal.segarr)}</td>
-                    <td>${fmt(subtotal.new_mbr)}</td>
-                    <td class="no-export">-</td>
-                </tr>
-            `;
-        });
-
-        tbody.innerHTML += `
-            <tr class="tr-grandtotal">
-                <td colspan="2">GRAND TOTAL</td>
-                <td>${fmt(grandTotal.psm)}</td>
-                <td>${fmt(grandTotal.pwp)}</td>
-                <td>${fmt(grandTotal.sergas)}</td>
-                <td>${fmt(grandTotal.segarr)}</td>
-                <td>${fmt(grandTotal.new_mbr)}</td>
-                <td class="no-export">-</td>
-            </tr>
-        `;
     }
 
-    function deleteSingleRow(id) {
-        if (confirm("Hapus baris laporan shift ini dari tabel?")) {
-            let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-            dataList = dataList.filter(item => item.id !== id);
-            localStorage.setItem("pps_monitoring_data", JSON.stringify(dataList));
-            renderMonitoringTable();
-        }
-    }
-
-    function clearMonitoringData() {
-        if (confirm("Apakah Anda yakin ingin menghapus SELURUH riwayat data monitoring di HP ini?")) {
-            localStorage.removeItem("pps_monitoring_data");
-            renderMonitoringTable();
-        }
-    }
-
-    function copyWA() {
-        saveToMonitoring();
-        let text = document.getElementById("preview").innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert("✅ Laporan di-copy ke Clipboard & otomatis tersimpan ke Tabel Monitoring!");
-        }).catch(err => {
-            alert("Gagal copy otomatis. Silakan select manual teks preview di atas.");
-        });
-    }
-
-    function shareToWA() {
-        saveToMonitoring();
-        let text = document.getElementById("preview").innerText;
-        let waUrl = "whatsapp://send?text=" + encodeURIComponent(text);
-        window.location.href = waUrl;
-    }
-
-    // EXPORT TEKS TABEL FORMAT SPREADSHEET (SOLUSI ANTI-BLOKIR DARI HP)
     function exportToExcel() {
-        let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-        if (dataList.length === 0) {
-            alert("Belum ada data untuk di-export!");
-            return;
+        let table = document.getElementById("monitoringTable");
+        let text = "";
+        for (let row of table.rows) {
+            let cols = Array.from(row.cells).map(cell => cell.innerText);
+            text += cols.join("\t") + "\n";
         }
-
-        let csvRows = [];
-        csvRows.push("Tanggal\tShift\tPSM\tPWP\tSergas\tSegarrrrr\tNew Member");
-
-        dataList.forEach(item => {
-            csvRows.push(`${item.tgl}\tShift ${item.shift}\t${item.psm}\t${item.pwp}\t${item.sergas}\t${item.segarr}\t${item.new_mbr}`);
-        });
-
-        let excelText = csvRows.join("\n");
-
-        navigator.clipboard.writeText(excelText).then(() => {
-            alert("✅ Data tabel berhasil di-COPY!\n\nSilakan buka Google Sheets / Excel di HP lalu tempel (PASTE). Data akan langsung tersusun rapi per kolom!");
-        }).catch(err => {
-            alert("Gagal copy otomatis. Pastikan izin clipboard browser aktif.");
-        });
+        navigator.clipboard.writeText(text);
+        alert("Data tersalin! Buka Excel/Sheets lalu PASTE (Tempel).");
     }
-</script>
 
+    document.addEventListener("DOMContentLoaded", () => {
+        let d = new Date();
+        document.getElementById("tgl").value = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
+        document.getElementById("kode_toko").value = localStorage.getItem("saved_kode_toko") || "";
+    });
+</script>
 </body>
 </html>
