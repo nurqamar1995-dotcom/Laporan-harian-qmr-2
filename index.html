@@ -25,7 +25,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
         }
 
@@ -66,7 +66,7 @@
             background-color: #e2e8f0;
             color: var(--text-dark);
             font-weight: 700;
-            font-size: 0.9em;
+            font-size: 0.85em;
             border-radius: 8px;
             cursor: pointer;
             border: none;
@@ -256,7 +256,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.82em;
+            font-size: 0.78em;
             text-align: center;
             background-color: #fff;
         }
@@ -302,6 +302,40 @@
             cursor: pointer;
             font-weight: bold;
         }
+
+        /* STYLING KARTU EVALUASI KASIR */
+        .eval-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 14px;
+            border: 2px solid #cbd5e1;
+            margin-top: 14px;
+        }
+
+        .eval-badge-hebat {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .eval-badge-dodong {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .gap-plus { color: #10b981; font-weight: bold; }
+        .gap-minus { color: #ef4444; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -316,6 +350,7 @@
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('tab-laporan', this)">📝 Input Laporan</button>
         <button class="tab-btn" onclick="switchTab('tab-monitoring', this)">📊 Monitoring PPS</button>
+        <button class="tab-btn" onclick="switchTab('tab-kasir', this)">🏆 Kinerja Kasir</button>
     </div>
 
     <!-- TAB 1: INPUT LAPORAN -->
@@ -334,23 +369,23 @@
                         </select>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target SPD</label><input type="text" id="t_spd" placeholder="3.158.200" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target STD</label><input type="text" id="t_std" placeholder="128" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target SPD</label><input type="text" id="t_spd" placeholder="Input target SPD" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target STD</label><input type="text" id="t_std" placeholder="Input target STD" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target STD Member</label><input type="text" id="t_std_mbr" placeholder="99" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target New Member</label><input type="text" id="t_new_mbr" placeholder="1" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target STD Member</label><input type="text" id="t_std_mbr" placeholder="Input target Member" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target New Member</label><input type="text" id="t_new_mbr" placeholder="Input target New Mbr" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target PWP</label><input type="text" id="t_pwp" placeholder="12" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target PSM</label><input type="text" id="t_psm" placeholder="30" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target PWP</label><input type="text" id="t_pwp" placeholder="Input target PWP" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target PSM</label><input type="text" id="t_psm" placeholder="Input target PSM" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target Sergas</label><input type="text" id="t_sergas" placeholder="10" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target Segarrrrr</label><input type="text" id="t_segarr" placeholder="10" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target Sergas</label><input type="text" id="t_sergas" placeholder="Input target Sergas" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target Segarrrrr</label><input type="text" id="t_segarr" placeholder="Input target Segarr" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target Ceban</label><input type="text" id="t_ceban" placeholder="0" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target Ceban</label><input type="text" id="t_ceban" placeholder="Input target Ceban" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <button class="btn btn-secondary" onclick="saveTargetPreset()">Simpan Target Shift</button>
                 </div>
@@ -380,8 +415,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Staf / Crew</label>
-                    <input type="text" id="crew" placeholder="Qamar/Salsa" oninput="hitung()">
+                    <label>Staf / Kasir</label>
+                    <input type="text" id="crew" placeholder="Nanda/Salsa" oninput="hitung()">
                 </div>
             </div>
 
@@ -495,19 +530,16 @@
         <div class="card">
             <div class="section-title">📋 Preview Laporan WA</div>
             <div class="preview-box" id="preview"></div>
-            <button class="btn btn-primary" style="margin-top: 12px;" onclick="copyWA()">📋 Copy Ke Clipboard</button>
+            <button class="btn btn-primary" style="margin-top: 12px;" onclick="copyWA()">📋 Copy Ke Clipboard & Simpan</button>
             <button class="btn btn-wa" onclick="shareToWA()">📱 Kirim ke WhatsApp</button>
         </div>
     </div>
 
-    <!-- TAB 2: MONITORING PPS -->
+    <!-- TAB 2: MONITORING PPS LENGKAP DENGAN GAP & STAF/KASIR -->
     <div id="tab-monitoring" class="tab-content">
         <div class="card">
             <div class="section-title">📊 Monitoring Harian PPS</div>
-            <div class="grid-2" style="margin-bottom: 12px;">
-                <button class="btn btn-excel" style="margin-bottom:0;" onclick="exportToExcel()">📥 Export ke Excel</button>
-                <button class="btn btn-secondary" style="margin-top:0;" onclick="fetchOnlineMonitoringTable()">🔄 Refresh Online</button>
-            </div>
+            <button class="btn btn-excel" onclick="exportToExcel()">📥 Export ke Excel</button>
             
             <div class="table-responsive">
                 <table id="monitoringTable">
@@ -515,10 +547,12 @@
                         <tr>
                             <th>Tgl</th>
                             <th>Shift</th>
-                            <th>PSM</th>
-                            <th>PWP</th>
-                            <th>Sergas</th>
-                            <th>Segarr</th>
+                            <th>Staf/Kasir</th>
+                            <th>PSM (Act/Gap)</th>
+                            <th>PWP (Act/Gap)</th>
+                            <th>Sergas (Act/Gap)</th>
+                            <th>Segarr (Act/Gap)</th>
+                            <th>Ceban (Act/Gap)</th>
                             <th>New Mbr</th>
                             <th class="no-export">Aksi</th>
                         </tr>
@@ -531,10 +565,40 @@
             <button class="btn btn-reset" style="margin-top:16px;" onclick="clearMonitoringData()">🗑️ Hapus Semua Riwayat Data Lokal</button>
         </div>
     </div>
+
+    <!-- TAB 3: EVALUASI KINERJA KASIR -->
+    <div id="tab-kasir" class="tab-content">
+        <div class="card">
+            <div class="section-title">🔍 Pencarian Kinerja Kasir</div>
+            <div class="form-group">
+                <label>Nama Kasir (Contoh: Salsa)</label>
+                <input type="text" id="search_kasir" placeholder="Ketik nama kasir (misal: salsa)">
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Dari Tanggal</label>
+                    <input type="text" id="search_start_tgl" placeholder="01/08/26">
+                </div>
+                <div class="form-group">
+                    <label>Sampai Tanggal</label>
+                    <input type="text" id="search_end_tgl" placeholder="31/08/26">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="evaluasiKasir()">🔎 Cek Pencapaian Kasir</button>
+
+            <!-- HASIL EVALUASI -->
+            <div id="evaluasiHasil" style="display:none;" class="eval-card">
+                <h3 id="eval_nama_kasir" style="margin:0 0 6px 0; color:var(--primary);"></h3>
+                <div id="eval_periode" style="font-size:0.85em; color:var(--text-muted); margin-bottom:12px;"></div>
+                
+                <div class="preview-box" id="eval_rincian" style="background:#0f172a; color:#f8fafc;"></div>
+                <div id="eval_badge_container" style="text-align:center;"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // URL GOOGLE APPS SCRIPT DATABASE PUSAT MILIKMU:
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfAJwDgwKZh_iL19zyngJAeG7-MwynNsmVJlCkzRLBt5AnKq8lxci4PEjPe-FUum8i/exec";
 
     function switchTab(tabId, el) {
@@ -588,7 +652,7 @@
     }
 
     function fmt(val) {
-        if (val === "" || val === null || isNaN(val)) return "";
+        if (val === "" || val === null || isNaN(val)) return "0";
         let num = Math.round(val);
         return num.toLocaleString("id-ID");
     }
@@ -608,6 +672,8 @@
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const yy = String(today.getFullYear()).slice(-2);
         document.getElementById("tgl").value = `${dd}/${mm}/${yy}`;
+        document.getElementById("search_end_tgl").value = `${dd}/${mm}/${yy}`;
+        document.getElementById("search_start_tgl").value = `01/${mm}/${yy}`;
         
         const savedKodeToko = localStorage.getItem("saved_kode_toko");
         if (savedKodeToko) {
@@ -715,7 +781,7 @@
             text += `Kode toko / Toko : ${kodeToko}\n`;
         }
         text += `Shif : ${getRawStr("shift")}\n`;
-        text += `Staf / crew : ${getRawStr("crew")}\n`;
+        text += `Staf / kasir : ${getRawStr("crew")}\n`;
         text += `*Target /actual/avc%*\n`;
 
         let spd_t_str = getRawStr("target_spd");
@@ -786,56 +852,97 @@
         }
     }
 
-    // KIRIM DATA KE MEMORI LOKAL HP DAN GOOGLE SHEETS DATABASE
+    // VALIDASI TARGET: MEMASTIKAN TARGET WAJIB DIISI SEBELUM BISA LANJUT
+    function validateTargetFilled() {
+        let currentShift = getRawStr("shift");
+        let t_spd = getCleanNum("target_spd");
+        let t_std = getCleanNum("target_std");
+        let t_psm = getCleanNum("target_psm");
+        let t_pwp = getCleanNum("target_pwp");
+
+        if (t_spd === 0 && t_std === 0 && t_psm === 0 && t_pwp === 0) {
+            alert(`⚠️ Target Shift ${currentShift} belum diisi!\n\nHarap buka menu "Pengaturan Target Shift", isi target shift lalu klik "Simpan Target Shift" terlebih dahulu agar perhitungan GAP & ACV akurat.`);
+            return false;
+        }
+        return true;
+    }
+
     function saveToMonitoring() {
         let tgl = getRawStr("tgl");
         let shift = getRawStr("shift");
         let kode_toko = getRawStr("kode_toko");
-        let crew = getRawStr("crew");
-        let psm = getCleanNum("actual_psm");
-        let pwp = getCleanNum("actual_pwp");
-        let sergas = getCleanNum("actual_sergas");
-        let segarr = getCleanNum("actual_segarr");
+        let crew = getRawStr("crew") || "-";
+        
+        let psm_act = getCleanNum("actual_psm");
+        let psm_tgt = getCleanNum("target_psm");
+        
+        let pwp_act = getCleanNum("actual_pwp");
+        let pwp_tgt = getCleanNum("target_pwp");
+        
+        let sergas_act = getCleanNum("actual_sergas");
+        let sergas_tgt = getCleanNum("target_sergas");
+        
+        let segarr_act = getCleanNum("actual_segarr");
+        let segarr_tgt = getCleanNum("target_segarr");
+        
+        let ceban_act = getCleanNum("actual_ceban");
+        let ceban_tgt = getCleanNum("target_ceban");
+        
         let new_mbr = getCleanNum("actual_new_mbr");
 
         if (!tgl) return;
 
-        // 1. Simpan ke LocalStorage HP
         let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-        dataList = dataList.filter(item => !(item.tgl === tgl && item.shift === shift));
+        dataList = dataList.filter(item => !(item.tgl === tgl && item.shift === shift && item.crew === crew));
+        
         dataList.push({
             id: Date.now(),
             tgl: tgl,
             shift: shift,
-            psm: psm,
-            pwp: pwp,
-            sergas: sergas,
-            segarr: segarr,
+            crew: crew,
+            psm: psm_act,
+            psm_tgt: psm_tgt,
+            pwp: pwp_act,
+            pwp_tgt: pwp_tgt,
+            sergas: sergas_act,
+            sergas_tgt: sergas_tgt,
+            segarr: segarr_act,
+            segarr_tgt: segarr_tgt,
+            ceban: ceban_act,
+            ceban_tgt: ceban_tgt,
             new_mbr: new_mbr
         });
         localStorage.setItem("pps_monitoring_data", JSON.stringify(dataList));
 
-        // 2. Simpan ke Google Sheets Database Online
+        // Sync Google Sheets
         if (GOOGLE_SCRIPT_URL && kode_toko) {
             let payload = {
                 kode_toko: kode_toko,
                 tgl: tgl,
                 shift: shift,
                 crew: crew,
-                psm: psm,
-                pwp: pwp,
-                sergas: sergas,
-                segarr: segarr,
+                psm: psm_act,
+                pwp: pwp_act,
+                sergas: sergas_act,
+                segarr: segarr_act,
+                ceban: ceban_act,
                 new_mbr: new_mbr
             };
-
             fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
-            }).catch(e => console.log("Gagal kirim online:", e));
+            }).catch(e => console.log("Gagal sync online:", e));
         }
+    }
+
+    function formatGap(act, tgt) {
+        if (tgt === 0 || !tgt) return `${fmt(act)}`;
+        let gap = act - tgt;
+        let gapStr = gap >= 0 ? `(+${fmt(gap)})` : `(${fmt(gap)})`;
+        let colorClass = gap >= 0 ? "gap-plus" : "gap-minus";
+        return `${fmt(act)} <span class="${colorClass}">${gapStr}</span>`;
     }
 
     function renderMonitoringTable() {
@@ -844,7 +951,7 @@
         tbody.innerHTML = "";
 
         if (dataList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="padding:15px; color:#64748b;">Belum ada data tersimpan. Data akan tersimpan otomatis saat Anda menekan tombol Copy atau Kirim WA.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="10" style="padding:15px; color:#64748b;">Belum ada data tersimpan. Data akan tersimpan otomatis saat Anda menekan tombol Copy atau Kirim WA.</td></tr>`;
             return;
         }
 
@@ -854,29 +961,34 @@
             groupedByTgl[item.tgl].push(item);
         });
 
-        let grandTotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, new_mbr: 0 };
+        let grandTotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, ceban: 0, new_mbr: 0 };
 
         Object.keys(groupedByTgl).forEach(tgl => {
             let items = groupedByTgl[tgl];
             items.sort((a, b) => parseInt(a.shift) - parseInt(b.shift));
 
-            let subtotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, new_mbr: 0 };
+            let subtotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, ceban: 0, new_mbr: 0 };
 
             items.forEach(item => {
                 subtotal.psm += item.psm;
                 subtotal.pwp += item.pwp;
                 subtotal.sergas += item.sergas;
                 subtotal.segarr += item.segarr;
+                subtotal.ceban += (item.ceban || 0);
                 subtotal.new_mbr += item.new_mbr;
+
+                let displayCrew = item.crew && item.crew !== "undefined" ? item.crew : "-";
 
                 tbody.innerHTML += `
                     <tr>
                         <td>${item.tgl}</td>
                         <td>Shift ${item.shift}</td>
-                        <td>${fmt(item.psm)}</td>
-                        <td>${fmt(item.pwp)}</td>
-                        <td>${fmt(item.sergas)}</td>
-                        <td>${fmt(item.segarr)}</td>
+                        <td><b>${displayCrew}</b></td>
+                        <td>${formatGap(item.psm, item.psm_tgt)}</td>
+                        <td>${formatGap(item.pwp, item.pwp_tgt)}</td>
+                        <td>${formatGap(item.sergas, item.sergas_tgt)}</td>
+                        <td>${formatGap(item.segarr, item.segarr_tgt)}</td>
+                        <td>${formatGap(item.ceban || 0, item.ceban_tgt)}</td>
                         <td>${fmt(item.new_mbr)}</td>
                         <td class="no-export"><button class="btn-delete-row" onclick="deleteSingleRow(${item.id})">✕</button></td>
                     </tr>
@@ -887,15 +999,17 @@
             grandTotal.pwp += subtotal.pwp;
             grandTotal.sergas += subtotal.sergas;
             grandTotal.segarr += subtotal.segarr;
+            grandTotal.ceban += subtotal.ceban;
             grandTotal.new_mbr += subtotal.new_mbr;
 
             tbody.innerHTML += `
                 <tr class="tr-subtotal">
-                    <td colspan="2">Total (${tgl})</td>
+                    <td colspan="3">Total (${tgl})</td>
                     <td>${fmt(subtotal.psm)}</td>
                     <td>${fmt(subtotal.pwp)}</td>
                     <td>${fmt(subtotal.sergas)}</td>
                     <td>${fmt(subtotal.segarr)}</td>
+                    <td>${fmt(subtotal.ceban)}</td>
                     <td>${fmt(subtotal.new_mbr)}</td>
                     <td class="no-export">-</td>
                 </tr>
@@ -904,119 +1018,91 @@
 
         tbody.innerHTML += `
             <tr class="tr-grandtotal">
-                <td colspan="2">GRAND TOTAL</td>
+                <td colspan="3">GRAND TOTAL</td>
                 <td>${fmt(grandTotal.psm)}</td>
                 <td>${fmt(grandTotal.pwp)}</td>
                 <td>${fmt(grandTotal.sergas)}</td>
                 <td>${fmt(grandTotal.segarr)}</td>
+                <td>${fmt(grandTotal.ceban)}</td>
                 <td>${fmt(grandTotal.new_mbr)}</td>
                 <td class="no-export">-</td>
             </tr>
         `;
     }
 
-    // FUNGSI UNTUK MEREFRESH DATA SECARA ONLINE DARI GOOGLE SHEETS (DENGAN PENANGANAN CORS)
-    function fetchOnlineMonitoringTable() {
-        let kodeToko = getRawStr("kode_toko");
-        let tbody = document.getElementById("monitoringTableBody");
+    function evaluasiKasir() {
+        let search = document.getElementById("search_kasir").value.trim().toLowerCase();
+        let startTgl = document.getElementById("search_start_tgl").value.trim();
+        let endTgl = document.getElementById("search_end_tgl").value.trim();
 
-        if (!kodeToko) {
-            alert("Isi 'Kode Toko' terlebih dahulu di Tab Laporan!");
+        if (!search) {
+            alert("Silakan masukkan Nama Kasir terlebih dahulu (contoh: Salsa)!");
             return;
         }
 
-        tbody.innerHTML = `<tr><td colspan="8" style="padding:15px; color:#0284c7;">Mengambil data online toko ${kodeToko}...</td></tr>`;
-
-        fetch(`${GOOGLE_SCRIPT_URL}?kode_toko=${encodeURIComponent(kodeToko)}`, {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        })
-        .then(res => res.text())
-        .then(text => {
-            let dataList = [];
-            try {
-                dataList = JSON.parse(text);
-            } catch(e) {
-                console.log("Error parse data:", e);
-            }
-
-            tbody.innerHTML = "";
-            if (!dataList || dataList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="padding:15px; color:#64748b;">Belum ada riwayat data online untuk toko ${kodeToko}. Silakan input laporan lalu tekan Copy/Kirim WA.</td></tr>`;
-                return;
-            }
-
-            let groupedByTgl = {};
-            dataList.forEach(item => {
-                if (!groupedByTgl[item.tgl]) groupedByTgl[item.tgl] = [];
-                groupedByTgl[item.tgl].push(item);
-            });
-
-            let grandTotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, new_mbr: 0 };
-
-            Object.keys(groupedByTgl).forEach(tgl => {
-                let items = groupedByTgl[tgl];
-                items.sort((a, b) => parseInt(a.shift) - parseInt(b.shift));
-
-                let subtotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, new_mbr: 0 };
-
-                items.forEach(item => {
-                    subtotal.psm += item.psm;
-                    subtotal.pwp += item.pwp;
-                    subtotal.sergas += item.sergas;
-                    subtotal.segarr += item.segarr;
-                    subtotal.new_mbr += item.new_mbr;
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${item.tgl}</td>
-                            <td>Shift ${item.shift}</td>
-                            <td>${fmt(item.psm)}</td>
-                            <td>${fmt(item.pwp)}</td>
-                            <td>${fmt(item.sergas)}</td>
-                            <td>${fmt(item.segarr)}</td>
-                            <td>${fmt(item.new_mbr)}</td>
-                            <td class="no-export">-</td>
-                        </tr>
-                    `;
-                });
-
-                grandTotal.psm += subtotal.psm;
-                grandTotal.pwp += subtotal.pwp;
-                grandTotal.sergas += subtotal.sergas;
-                grandTotal.segarr += subtotal.segarr;
-                grandTotal.new_mbr += subtotal.new_mbr;
-
-                tbody.innerHTML += `
-                    <tr class="tr-subtotal">
-                        <td colspan="2">Total (${tgl})</td>
-                        <td>${fmt(subtotal.psm)}</td>
-                        <td>${fmt(subtotal.pwp)}</td>
-                        <td>${fmt(subtotal.sergas)}</td>
-                        <td>${fmt(subtotal.segarr)}</td>
-                        <td>${fmt(subtotal.new_mbr)}</td>
-                        <td class="no-export">-</td>
-                    </tr>
-                `;
-            });
-
-            tbody.innerHTML += `
-                <tr class="tr-grandtotal">
-                    <td colspan="2">GRAND TOTAL</td>
-                    <td>${fmt(grandTotal.psm)}</td>
-                    <td>${fmt(grandTotal.pwp)}</td>
-                    <td>${fmt(grandTotal.sergas)}</td>
-                    <td>${fmt(grandTotal.segarr)}</td>
-                    <td>${fmt(grandTotal.new_mbr)}</td>
-                    <td class="no-export">-</td>
-                </tr>
-            `;
-        })
-        .catch(err => {
-            tbody.innerHTML = `<tr><td colspan="8" style="padding:15px; color:#64748b;">Belum ada data tersimpan di Google Sheets untuk toko ini.</td></tr>`;
+        let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
+        
+        let filtered = dataList.filter(item => {
+            if (!item.crew) return false;
+            let crewLower = item.crew.toLowerCase();
+            return crewLower.includes(search);
         });
+
+        if (filtered.length === 0) {
+            alert(`Tidak ditemukan data penjualan untuk kasir dengan nama "${search}".`);
+            return;
+        }
+
+        let totalAct = { psm: 0, pwp: 0, sergas: 0, segarr: 0, ceban: 0, new_mbr: 0 };
+        let totalTgt = { psm: 0, pwp: 0, sergas: 0, segarr: 0, ceban: 0 };
+
+        filtered.forEach(item => {
+            totalAct.psm += item.psm;
+            totalTgt.psm += (item.psm_tgt || 0);
+            
+            totalAct.pwp += item.pwp;
+            totalTgt.pwp += (item.pwp_tgt || 0);
+
+            totalAct.sergas += item.sergas;
+            totalTgt.sergas += (item.sergas_tgt || 0);
+
+            totalAct.segarr += item.segarr;
+            totalTgt.segarr += (item.segarr_tgt || 0);
+
+            totalAct.ceban += (item.ceban || 0);
+            totalTgt.ceban += (item.ceban_tgt || 0);
+
+            totalAct.new_mbr += item.new_mbr;
+        });
+
+        let psmGap = totalAct.psm - totalTgt.psm;
+        let pwpGap = totalAct.pwp - totalTgt.pwp;
+        let sergasGap = totalAct.sergas - totalTgt.sergas;
+        let segarrGap = totalAct.segarr - totalTgt.segarr;
+        let cebanGap = totalAct.ceban - totalTgt.ceban;
+
+        let plusCount = (psmGap >= 0 ? 1 : 0) + (pwpGap >= 0 ? 1 : 0) + (sergasGap >= 0 ? 1 : 0) + (segarrGap >= 0 ? 1 : 0) + (cebanGap >= 0 ? 1 : 0);
+        let isHebat = plusCount >= 3;
+
+        document.getElementById("eval_nama_kasir").innerText = `👤 Kasir: ${search.toUpperCase()}`;
+        document.getElementById("eval_periode").innerText = `Periode: ${startTgl || 'Awal'} s/d ${endTgl || 'Sekarang'} (${filtered.length} Shift Tercatat)`;
+
+        let rincianText = `📊 Pencapaian Kasir:\n` +
+                          `• PSM       : ${fmt(totalAct.psm)} (Target: ${fmt(totalTgt.psm)}) -> Gap: ${psmGap >= 0 ? '+' : ''}${fmt(psmGap)}\n` +
+                          `• PWP       : ${fmt(totalAct.pwp)} (Target: ${fmt(totalTgt.pwp)}) -> Gap: ${pwpGap >= 0 ? '+' : ''}${fmt(pwpGap)}\n` +
+                          `• Sergas    : ${fmt(totalAct.sergas)} (Target: ${fmt(totalTgt.sergas)}) -> Gap: ${sergasGap >= 0 ? '+' : ''}${fmt(sergasGap)}\n` +
+                          `• Segarrrrr : ${fmt(totalAct.segarr)} (Target: ${fmt(totalTgt.segarr)}) -> Gap: ${segarrGap >= 0 ? '+' : ''}${fmt(segarrGap)}\n` +
+                          `• Ceban     : ${fmt(totalAct.ceban)} (Target: ${fmt(totalTgt.ceban)}) -> Gap: ${cebanGap >= 0 ? '+' : ''}${fmt(cebanGap)}\n` +
+                          `• New Member: ${fmt(totalAct.new_mbr)}`;
+
+        document.getElementById("eval_rincian").innerText = rincianText;
+
+        let badgeHtml = isHebat 
+            ? `<div class="eval-badge-hebat">🎖️ KASIR HEBAT (Pencapaian Di Atas Target)</div>` 
+            : `<div class="eval-badge-dodong">⚠️ KASIR DODONG (Kebanyakan GAP / Target Belum Tercapai)</div>`;
+        
+        document.getElementById("eval_badge_container").innerHTML = badgeHtml;
+        document.getElementById("evaluasiHasil").style.display = "block";
     }
 
     function deleteSingleRow(id) {
@@ -1036,16 +1122,18 @@
     }
 
     function copyWA() {
+        if (!validateTargetFilled()) return;
         saveToMonitoring();
         let text = document.getElementById("preview").innerText;
         navigator.clipboard.writeText(text).then(() => {
-            alert("✅ Laporan di-copy ke Clipboard & otomatis tersimpan ke Database!");
+            alert("✅ Laporan di-copy ke Clipboard & data otomatis tersimpan rapi!");
         }).catch(err => {
             alert("Gagal copy otomatis. Silakan select manual teks preview di atas.");
         });
     }
 
     function shareToWA() {
+        if (!validateTargetFilled()) return;
         saveToMonitoring();
         let text = document.getElementById("preview").innerText;
         let waUrl = "whatsapp://send?text=" + encodeURIComponent(text);
@@ -1071,7 +1159,6 @@
             <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
             <head>
                 <meta charset="utf-8">
-                <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Monitoring PPS</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
             </head>
             <body>
                 ${tableHTML}
