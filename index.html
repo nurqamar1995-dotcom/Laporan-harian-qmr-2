@@ -504,7 +504,7 @@
     <div id="tab-monitoring" class="tab-content">
         <div class="card">
             <div class="section-title">📊 Monitoring Harian PPS</div>
-            <button class="btn btn-excel" onclick="exportToExcel()">📥 Export ke Excel / Spreadsheet</button>
+            <button class="btn btn-excel" onclick="exportToExcel()">📋 Copy Format Spreadsheet/Excel</button>
             
             <div class="table-responsive">
                 <table id="monitoringTable">
@@ -919,6 +919,7 @@
         window.location.href = waUrl;
     }
 
+    // EXPORT TEKS TABEL FORMAT SPREADSHEET (SOLUSI ANTI-BLOKIR DARI HP)
     function exportToExcel() {
         let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
         if (dataList.length === 0) {
@@ -926,39 +927,20 @@
             return;
         }
 
-        let table = document.getElementById("monitoringTable").cloneNode(true);
-        let noExportEls = table.querySelectorAll('.no-export');
-        noExportEls.forEach(el => el.remove());
+        let csvRows = [];
+        csvRows.push("Tanggal\tShift\tPSM\tPWP\tSergas\tSegarrrrr\tNew Member");
 
-        let tableHTML = table.outerHTML;
-        let fileDate = getRawStr("tgl").replace(/\//g, "-") || "Laporan";
-        let fileName = `Monitoring_PPS_${fileDate}.xls`;
+        dataList.forEach(item => {
+            csvRows.push(`${item.tgl}\tShift ${item.shift}\t${item.psm}\t${item.pwp}\t${item.sergas}\t${item.segarr}\t${item.new_mbr}`);
+        });
 
-        let excelData = `
-            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-            <head>
-                <meta charset="utf-8">
-                <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Monitoring PPS</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-            </head>
-            <body>
-                ${tableHTML}
-            </body>
-            </html>
-        `;
+        let excelText = csvRows.join("\n");
 
-        let blob = new Blob([excelData], { type: 'application/vnd.ms-excel' });
-        let url = URL.createObjectURL(blob);
-
-        let a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }, 100);
+        navigator.clipboard.writeText(excelText).then(() => {
+            alert("✅ Data tabel berhasil di-COPY!\n\nSilakan buka Google Sheets / Excel di HP lalu tempel (PASTE). Data akan langsung tersusun rapi per kolom!");
+        }).catch(err => {
+            alert("Gagal copy otomatis. Pastikan izin clipboard browser aktif.");
+        });
     }
 </script>
 
