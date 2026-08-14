@@ -405,8 +405,28 @@
                     <input type="date" id="tgl" onchange="hitung()">
                 </div>
                 <div class="form-group">
-                    <label>Kode Toko / Toko</label>
-                    <input type="text" id="kode_toko" placeholder="R017 /MGki" oninput="saveKodeToko(); hitung()">
+                    <label>Pilih Toko</label>
+                    <select id="kode_toko" onchange="saveKodeToko(); hitung()">
+                        <option value="R017 / SAT MALINGKERI [MGKI]">R017 - MALINGKERI [MGKI]</option>
+                        <option value="R697 / SAT ANDI DJEMMA MKS [ANDJ]">R697 - ANDI DJEMMA MKS [ANDJ]</option>
+                        <option value="R169 / SAT BTN TABARIA [BTAB]">R169 - BTN TABARIA [BTAB]</option>
+                        <option value="R175 / SAT ANDI TONRO 2 [ATO2]">R175 - ANDI TONRO 2 [ATO2]</option>
+                        <option value="R003 / SAT ANDI TONRO [ATRO]">R003 - ANDI TONRO [ATRO]</option>
+                        <option value="R465 / SAT MAPPAODDANG BONGAYA [MPBO]">R465 - MAPPAODDANG BONGAYA [MPBO]</option>
+                        <option value="R117 / SAT MAPPAODDANG [MPOD]">R117 - MAPPAODDANG [MPOD]</option>
+                        <option value="R058 / SAT DAENG TATA [DTAT]">R058 - DAENG TATA [DTAT]</option>
+                        <option value="R277 / SAT DAENG NGEPPE [DGPE]">R277 - DAENG NGEPPE [DGPE]</option>
+                        <option value="R839 / SAT OPU DG RISADJU [OPDG]">R839 - OPU DG RISADJU [OPDG]</option>
+                        <option value="R770 / SAT MALENGKERI MANGASA [MLNS]">R770 - MALENGKERI MANGASA [MLNS]</option>
+                        <option value="R083 / SAT M TAHIR [MTHR]">R083 - M TAHIR [MTHR]</option>
+                        <option value="R466 / SAT LANDAK RAPPOCINI [LNRP]">R466 - LANDAK RAPPOCINI [LNRP]</option>
+                        <option value="R153 / SAT BAJI GAU [BGAU]">R153 - BAJI GAU [BGAU]</option>
+                        <option value="R006 / SAT LANDAK BARU [LDKB]">R006 - LANDAK BARU [LDKB]</option>
+                        <option value="R031 / SAT TANJUNG ALANG [TJAG]">R031 - TANJUNG ALANG [TJAG]</option>
+                        <option value="R334 / SAT BONTO DURI [BODI]">R334 - BONTO DURI [BODI]</option>
+                        <option value="R108 / SAT CENDRAWASIH 2 [CWS2]">R108 - CENDRAWASIH 2 [CWS2]</option>
+                        <option value="R540 / SAT HOTEL CLARO /F [HTCO]">R540 - HOTEL CLARO /F [HTCO]</option>
+                    </select>
                 </div>
             </div>
             <div class="grid-2">
@@ -549,8 +569,8 @@
                 <button class="btn btn-secondary" onclick="restoreFromOnlineDatabase()">🔄 Pulihkan / Tarik Data</button>
             </div>
             <div class="grid-2" style="margin-bottom: 12px;">
-                <button class="btn btn-clean" onclick="clearTableScreenOnly()">🧹 Bersihkan Layar Saja</button>
-                <button class="btn btn-reset" style="margin-top:0;" onclick="clearAllDataPermanently()">🗑️ Hapus Permanen Semua</button>
+                <button class="btn btn-clean" onclick="clearTableScreenOnly()">🧹 Sembunyikan Layar</button>
+                <button class="btn btn-reset" style="margin-top:0;" onclick="clearAllDataPermanently()">🗑️ Hapus Permanen HP</button>
             </div>
             
             <div class="table-responsive">
@@ -660,7 +680,6 @@
         return document.getElementById(id).value.trim();
     }
 
-    // Mengubah input kalender YYYY-MM-DD menjadi format teks DD/MM/YY untuk WhatsApp & Database
     function getDisplayDate(id) {
         let val = document.getElementById(id).value;
         if (!val) return "";
@@ -692,7 +711,6 @@
         const mmFull = String(today.getMonth() + 1).padStart(2, '0');
         const ddFull = String(today.getDate()).padStart(2, '0');
 
-        // Set default nilai kalender (YYYY-MM-DD)
         document.getElementById("tgl").value = `${yyyy}-${mmFull}-${ddFull}`;
         document.getElementById("search_end_tgl").value = `${yyyy}-${mmFull}-${ddFull}`;
         document.getElementById("search_start_tgl").value = `${yyyy}-${mmFull}-01`;
@@ -952,7 +970,7 @@
             fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify(payload)
             }).catch(e => console.log("Gagal sync online:", e));
         }
@@ -972,7 +990,7 @@
         tbody.innerHTML = "";
 
         if (dataList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="10" style="padding:15px; color:#64748b;">Belum ada data di layar. Klik tombol <b>"🔄 Pulihkan / Tarik Data"</b> untuk memunculkan riwayat laporan toko dari server.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="10" style="padding:15px; color:#64748b;">Belum ada data di layar. Klik tombol <b>"🔄 Pulihkan / Tarik Data"</b> untuk memunculkan riwayat laporan toko.</td></tr>`;
             return;
         }
 
@@ -1052,68 +1070,24 @@
     }
 
     function clearTableScreenOnly() {
-        if (confirm("Bersihkan tampilan tabel dari layar saat ini? (Data di server tetap aman dan bisa ditarik kembali).")) {
-            localStorage.removeItem("pps_monitoring_data");
-            renderMonitoringTable();
-        }
+        let tbody = document.getElementById("monitoringTableBody");
+        tbody.innerHTML = `<tr><td colspan="10" style="padding:15px; color:#64748b;">Tampilan tabel disembunyikan. Klik <b>"🔄 Pulihkan / Tarik Data"</b> untuk menampilkan kembali data laporan.</td></tr>`;
     }
 
     function restoreFromOnlineDatabase() {
-        let kodeToko = getRawStr("kode_toko");
-        let tbody = document.getElementById("monitoringTableBody");
+        let localData = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
 
-        if (!kodeToko) {
-            alert("Harap masukkan 'Kode Toko' terlebih dahulu di tab Input Laporan!");
-            return;
+        if (localData.length > 0) {
+            renderMonitoringTable();
+            alert(`✅ Berhasil memulihkan ${localData.length} data laporan toko!`);
+        } else {
+            renderMonitoringTable();
+            alert(`Belum ada data tersimpan di HP ini.`);
         }
-
-        tbody.innerHTML = `<tr><td colspan="10" style="padding:15px; color:#0284c7;">Sedang memulihkan data online untuk toko ${kodeToko}...</td></tr>`;
-
-        fetch(`${GOOGLE_SCRIPT_URL}?kode_toko=${encodeURIComponent(kodeToko)}`)
-            .then(res => res.json())
-            .then(serverData => {
-                if (serverData && Array.isArray(serverData) && serverData.length > 0) {
-                    let localData = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-                    
-                    serverData.forEach(sItem => {
-                        let exists = localData.some(lItem => lItem.tgl === sItem.tgl && String(lItem.shift) === String(sItem.shift) && lItem.crew === sItem.crew);
-                        if (!exists) {
-                            localData.push({
-                                id: Date.now() + Math.random(),
-                                kode_toko: sItem.kode_toko,
-                                tgl: sItem.tgl,
-                                shift: sItem.shift,
-                                crew: sItem.crew || "-",
-                                psm: sItem.psm || 0,
-                                psm_tgt: 0,
-                                pwp: sItem.pwp || 0,
-                                pwp_tgt: 0,
-                                sergas: sItem.sergas || 0,
-                                sergas_tgt: 0,
-                                segarr: sItem.segarr || 0,
-                                segarr_tgt: 0,
-                                ceban: 0,
-                                ceban_tgt: 0,
-                                new_mbr: sItem.new_mbr || 0
-                            });
-                        }
-                    });
-
-                    localStorage.setItem("pps_monitoring_data", JSON.stringify(localData));
-                    alert(`✅ Berhasil memulihkan ${serverData.length} data laporan toko ${kodeToko}!`);
-                } else {
-                    alert(`Tidak ada riwayat data di server untuk toko ${kodeToko}.`);
-                }
-                renderMonitoringTable();
-            })
-            .catch(err => {
-                alert("Gagal terhubung ke database server. Pastikan koneksi internet aktif!");
-                renderMonitoringTable();
-            });
     }
 
     function clearAllDataPermanently() {
-        if (confirm("PERINGATAN: Apakah Anda yakin ingin MENGHAPUS PERMANEN seluruh data di HP ini?")) {
+        if (confirm("PERINGATAN: Apakah Anda yakin ingin MENGHAPUS PERMANEN seluruh riwayat data laporan di HP ini?")) {
             if (confirm("Konfirmasi sekali lagi untuk menghapus semua data?")) {
                 localStorage.removeItem("pps_monitoring_data");
                 renderMonitoringTable();
