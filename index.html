@@ -34,6 +34,7 @@
             --text-muted: #94a3b8;
             --border: #334155;
             --accent-bg: #0f172a;
+            --input-bg: #334155;
             --table-head: #115e59;
             --table-border: #334155;
         }
@@ -98,6 +99,10 @@
         tr:nth-child(even) { background-color: var(--accent-bg); }
         .tr-grandtotal { background-color: rgba(234, 179, 8, 0.2) !important; font-weight: 800; color: var(--text-dark); }
         .btn-delete-row { background-color: #fee2e2; color: #ef4444; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; cursor: pointer; font-weight: bold; }
+
+        .eval-card { background: var(--card-bg); border-radius: 10px; padding: 14px; border: 2px solid var(--border); margin-top: 14px; }
+        .eval-badge-hebat { display: inline-block; background: #10b981; color: white; font-weight: bold; padding: 6px 12px; border-radius: 20px; font-size: 0.9em; margin-top: 8px; }
+        .eval-badge-dodong { display: inline-block; background: #ef4444; color: white; font-weight: bold; padding: 6px 12px; border-radius: 20px; font-size: 0.9em; margin-top: 8px; }
 
         /* FLOATING CHAT BUTTON & NOTIFICATION ANIMATION */
         .chat-float-btn {
@@ -272,6 +277,7 @@
                         <option value="R108 / SAT CENDRAWASIH 2 [CWS2]">R108 - CENDRAWASIH 2 [CWS2]</option>
                         <option value="R540 / SAT HOTEL CLARO /F [HTCO]">R540 - HOTEL CLARO /F [HTCO]</option>
                     </select>
+                    <button class="btn btn-secondary" type="button" style="margin-top: 6px; font-size: 0.8em; padding: 6px;" onclick="changeStorePin()">🔑 Ganti PIN Toko Ini</button>
                 </div>
             </div>
 
@@ -499,15 +505,12 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    const STORE_PINS = {
-        "R017": "1234",
-        "R697": "5678",
-        "DEFAULT": "0000"
-    };
-
     let cachedFirebaseData = [];
     let unreadChatCount = 0;
     let isChatOpen = false;
+
+    // NICKNAME PENGIRIM CHAT
+    const DEVELOPER_NICKNAME = "Developer"; 
 
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
@@ -540,12 +543,15 @@
     }
 
     function getCleanNum(id) {
-        let val = document.getElementById(id).value;
-        if (!val) return 0;
-        return parseFloat(val.replace(/\./g, "").replace("+", "")) || 0;
+        let el = document.getElementById(id);
+        if (!el || !el.value) return 0;
+        return parseFloat(el.value.replace(/\./g, "").replace("+", "")) || 0;
     }
 
-    function getRawStr(id) { return document.getElementById(id).value.trim(); }
+    function getRawStr(id) { 
+        let el = document.getElementById(id);
+        return el ? el.value.trim() : ""; 
+    }
 
     function handleTokoSelectChange() {
         let selectVal = document.getElementById("kode_toko").value;
@@ -553,10 +559,12 @@
     }
 
     function getRawStrKodeToko() {
-        let selectVal = document.getElementById("kode_toko").value;
+        let el = document.getElementById("kode_toko");
+        if (!el) return "R017";
+        let selectVal = el.value;
         if (selectVal === "CUSTOM") {
-            let kode = document.getElementById("custom_kode_toko").value.trim().toUpperCase();
-            let nama = document.getElementById("custom_nama_toko").value.trim().toUpperCase();
+            let kode = getRawStr("custom_kode_toko").toUpperCase();
+            let nama = getRawStr("custom_nama_toko").toUpperCase();
             if (kode || nama) return `${kode} / ${nama}`;
             return "CUSTOM / TOKO LAIN";
         }
@@ -565,9 +573,11 @@
 
     function getCleanStoreId() {
         let rawKode = getRawStrKodeToko();
-        return rawKode.split('/')[0].trim().replace(/[^a-zA-Z0-9]/g, "");
+        let clean = rawKode.split('/')[0].trim().replace(/[^a-zA-Z0-9]/g, "");
+        return clean || "R017";
     }
 
+    // --- FITUR SYSTEM PIN SERVER FIREBASE ---
     function lockAndSaveStore() {
         let storeId = getCleanStoreId();
         let currentLockedStore = localStorage.getItem("locked_store_id");
@@ -578,21 +588,71 @@
             return;
         }
 
-        let expectedPin = STORE_PINS[storeId] || STORE_PINS["DEFAULT"];
-        let inputPin = prompt(`Masukkan PIN Keamanan untuk Toko ${storeId}:`);
+        database.ref(`stores/${storeId}/pin`).once('value').then((snapshot) => {
+            let serverPin = snapshot.val();
 
-        if (inputPin === expectedPin) {
-            localStorage.setItem("locked_store_id", storeId);
-            localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value);
-            alert(`✅ Perangkat terkunci untuk Toko ${storeId}.`);
-            listenStoreMonitoring();
-        } else {
-            alert("❌ PIN Salah!");
-            let previousSaved = localStorage.getItem("saved_kode_toko");
-            if (previousSaved) {
-                document.getElementById("kode_toko").value = previousSaved;
-                handleTokoSelectChange();
+            if (!serverPin) {
+                let newPin = prompt(`🔒 Toko ${storeId} belum memiliki PIN di Server.\n\nBUAT PIN BARU untuk Toko ${storeId}:`);
+                if (newPin && newPin.trim() !== "") {
+                    let cleanPin = newPin.trim();
+                    database.ref(`stores/${storeId}/pin`).set(cleanPin).then(() => {
+                        localStorage.setItem("locked_store_id", storeId);
+                        localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value);
+                        alert(`✅ PIN Toko ${storeId} Berhasil dibuat di Server!`);
+                        listenStoreMonitoring();
+                    });
+                } else {
+                    revertStoreSelection();
+                }
+            } else {
+                let inputPin = prompt(`🔑 Masukkan PIN Keamanan Toko ${storeId}:`);
+                if (inputPin === serverPin) {
+                    localStorage.setItem("locked_store_id", storeId);
+                    localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value);
+                    alert(`✅ PIN Benar! Berhasil masuk Toko ${storeId}.`);
+                    listenStoreMonitoring();
+                } else {
+                    alert("❌ PIN Salah! Akses ditolak.");
+                    revertStoreSelection();
+                }
             }
+        }).catch(err => alert("Error Server PIN: " + err.message));
+    }
+
+    function changeStorePin() {
+        let storeId = getCleanStoreId();
+        database.ref(`stores/${storeId}/pin`).once('value').then((snapshot) => {
+            let currentPin = snapshot.val();
+
+            if (!currentPin) {
+                let newPinInput = prompt(`🔒 Toko ${storeId} belum memiliki PIN di server.\n\nMasukkan PIN BARU:`);
+                if (newPinInput && newPinInput.trim() !== "") {
+                    database.ref(`stores/${storeId}/pin`).set(newPinInput.trim()).then(() => {
+                        alert(`🎉 PIN Toko ${storeId} berhasil dibuat!`);
+                    });
+                }
+                return;
+            }
+
+            let oldPinInput = prompt(`🔒 Ganti PIN Toko ${storeId}\n\nMasukkan PIN LAMA saat ini:`);
+            if (oldPinInput === currentPin) {
+                let newPinInput = prompt(`✅ PIN Lama Cocok!\n\nMasukkan PIN BARU:`);
+                if (newPinInput && newPinInput.trim() !== "") {
+                    database.ref(`stores/${storeId}/pin`).set(newPinInput.trim()).then(() => {
+                        alert(`🎉 Berhasil! PIN Toko ${storeId} telah diperbarui di Server.`);
+                    });
+                }
+            } else {
+                alert("❌ PIN Lama Salah! Perubahan PIN ditolak.");
+            }
+        });
+    }
+
+    function revertStoreSelection() {
+        let previousSaved = localStorage.getItem("saved_kode_toko");
+        if (previousSaved) {
+            document.getElementById("kode_toko").value = previousSaved;
+            handleTokoSelectChange();
         }
     }
 
@@ -896,7 +956,7 @@
         }
     }
 
-    // --- LOGIKA FLOATING LIVE CHAT & NOTIFIKASI KEDIP ---
+    // --- LOGIKA FLOATING CHAT & NOTIFIKASI KEDIP ---
     function toggleChatModal() {
         let modal = document.getElementById("chatModal");
         let btn = document.getElementById("chatFloatBtn");
@@ -908,7 +968,6 @@
         } else {
             modal.style.display = "flex";
             isChatOpen = true;
-            // Reset Notifikasi saat dibuka
             unreadChatCount = 0;
             badge.style.display = "none";
             btn.classList.remove("unread-blink");
@@ -922,16 +981,26 @@
         let messageInput = document.getElementById("chatMessageInput");
         let text = messageInput.value.trim();
         let senderStore = getCleanStoreId();
-        let senderName = getRawStr("crew") || "Staf";
+        
+        // MENGGUNAKAN NICKNAME DEVELOPER
+        let senderName = DEVELOPER_NICKNAME || getRawStr("crew") || "Staf";
 
         if (!text) return;
 
-        database.ref("global_chats").push({
+        let chatData = {
             store: senderStore,
             sender: senderName,
             text: text,
             timestamp: firebase.database.ServerValue.TIMESTAMP
-        }).then(() => { messageInput.value = ""; });
+        };
+
+        database.ref("global_chats").push(chatData)
+            .then(() => {
+                messageInput.value = "";
+                let chatContainer = document.getElementById("chatContainer");
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            })
+            .catch(err => alert("Gagal kirim chat: " + err.message));
     }
 
     function handleChatKeyPress(e) {
@@ -956,7 +1025,6 @@
 
             let msgKeys = Object.keys(data);
             
-            // Logika Notifikasi jika ada pesan baru saat widget tertutup
             if (!isInitialChatLoad && !isChatOpen) {
                 unreadChatCount++;
                 badge.innerText = unreadChatCount;
@@ -973,7 +1041,7 @@
                 chatContainer.innerHTML += `
                     <div class="chat-bubble ${isMine ? 'mine' : 'other'}">
                         <div class="chat-header-info">
-                            <span>${msg.sender} (${msg.store})</span>
+                            <span>${escapeHtml(msg.sender)} (${escapeHtml(msg.store)})</span>
                             <button class="btn-delete-chat" onclick="deleteChatMessage('${msgId}')">✕</button>
                         </div>
                         <div class="chat-text">${escapeHtml(msg.text)}</div>
@@ -995,7 +1063,8 @@
     }
 
     function escapeHtml(str) {
-        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        if (!str) return "";
+        return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
     function copyWA() {
