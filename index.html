@@ -34,7 +34,6 @@
             --text-muted: #94a3b8;
             --border: #334155;
             --accent-bg: #0f172a;
-            --input-bg: #334155;
             --table-head: #115e59;
             --table-border: #334155;
         }
@@ -48,7 +47,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container { max-width: 650px; margin: 0 auto; }
+        .container { max-width: 650px; margin: 0 auto; padding-bottom: 60px; }
 
         .header-title {
             display: flex; justify-content: space-between; align-items: center;
@@ -86,7 +85,6 @@
         .btn-wa { background-color: #25d366; color: white; margin-top: 8px; }
         .btn-secondary { background-color: #0284c7; color: white; margin-top: 8px;}
         .btn-excel { background-color: #059669; color: white; }
-        .btn-clean { background-color: #eab308; color: white; }
         .btn-reset { background-color: #ef4444; color: white; margin-top: 10px; }
 
         .preview-box { white-space: pre-wrap; background: #0f172a; color: #38bdf8; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.88em; max-height: 220px; overflow-y: auto; border: 1px solid #334155; line-height: 1.4; }
@@ -98,15 +96,91 @@
         th { background-color: var(--table-head); color: white; padding: 8px 4px; font-weight: 600; border: 1px solid var(--border); white-space: nowrap; }
         td { padding: 7px 4px; border: 1px solid var(--table-border); white-space: nowrap; }
         tr:nth-child(even) { background-color: var(--accent-bg); }
-        .tr-subtotal { background-color: rgba(2, 132, 199, 0.2) !important; font-weight: 700; color: var(--text-dark); }
         .tr-grandtotal { background-color: rgba(234, 179, 8, 0.2) !important; font-weight: 800; color: var(--text-dark); }
         .btn-delete-row { background-color: #fee2e2; color: #ef4444; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; cursor: pointer; font-weight: bold; }
 
-        .eval-card { background: var(--card-bg); border-radius: 10px; padding: 14px; border: 2px solid var(--border); margin-top: 14px; }
-        .eval-badge-hebat { display: inline-block; background: #10b981; color: white; font-weight: bold; padding: 6px 12px; border-radius: 20px; font-size: 0.9em; margin-top: 8px; }
-        .eval-badge-dodong { display: inline-block; background: #ef4444; color: white; font-weight: bold; padding: 6px 12px; border-radius: 20px; font-size: 0.9em; margin-top: 8px; }
-        .gap-plus { color: #10b981; font-weight: bold; }
-        .gap-minus { color: #ef4444; font-weight: bold; }
+        /* FLOATING CHAT BUTTON & NOTIFICATION ANIMATION */
+        .chat-float-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .chat-float-btn.unread-blink {
+            animation: pulseBlink 1.2s infinite alternate;
+            background: #ef4444;
+        }
+
+        @keyframes pulseBlink {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            100% { transform: scale(1.06); box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+        }
+
+        .chat-badge {
+            background: #ffffff;
+            color: #ef4444;
+            font-size: 0.78em;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        /* POP-UP CHAT WIDGET MODAL */
+        .chat-modal {
+            display: none;
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            width: 90%;
+            max-width: 360px;
+            height: 420px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        .chat-modal-header {
+            background: var(--primary);
+            color: white;
+            padding: 10px 14px;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .chat-modal-close { background: none; border: none; color: white; font-size: 1.2em; cursor: pointer; }
+
+        .chat-messages { flex: 1; overflow-y: auto; padding: 10px; background: var(--accent-bg); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px; }
+        .chat-bubble { max-width: 82%; padding: 8px 12px; border-radius: 12px; font-size: 0.88em; line-height: 1.3; }
+        .chat-bubble.mine { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+        .chat-bubble.other { align-self: flex-start; background: var(--card-bg); color: var(--text-dark); border: 1px solid var(--border); border-bottom-left-radius: 2px; }
+        .chat-header-info { font-size: 0.75em; font-weight: bold; margin-bottom: 3px; opacity: 0.9; display: flex; justify-content: space-between; gap: 8px; }
+        .chat-text { word-break: break-word; }
+        .chat-time { font-size: 0.68em; opacity: 0.75; text-align: right; margin-top: 4px; }
+        .btn-delete-chat { background: none; border: none; color: #ef4444; font-size: 0.8em; cursor: pointer; padding: 0 2px; }
+        .chat-bubble.mine .btn-delete-chat { color: #fca5a5; }
+        .chat-input-group { display: flex; gap: 6px; }
     </style>
 </head>
 <body>
@@ -143,23 +217,23 @@
                         </select>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target SPD</label><input type="text" id="t_spd" placeholder="Input target SPD" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target STD</label><input type="text" id="t_std" placeholder="Input target STD" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target SPD</label><input type="text" id="t_spd" placeholder="Target SPD" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target STD</label><input type="text" id="t_std" placeholder="Target STD" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target STD Member</label><input type="text" id="t_std_mbr" placeholder="Input target Member" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target New Member</label><input type="text" id="t_new_mbr" placeholder="Input target New Mbr" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target STD Member</label><input type="text" id="t_std_mbr" placeholder="Target Member" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target New Member</label><input type="text" id="t_new_mbr" placeholder="Target New Mbr" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target PWP</label><input type="text" id="t_pwp" placeholder="Input target PWP" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target PSM</label><input type="text" id="t_psm" placeholder="Input target PSM" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target PWP</label><input type="text" id="t_pwp" placeholder="Target PWP" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target PSM</label><input type="text" id="t_psm" placeholder="Target PSM" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target Sergas</label><input type="text" id="t_sergas" placeholder="Input target Sergas" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target Segarrrrr</label><input type="text" id="t_segarr" placeholder="Input target Segarr" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target Sergas</label><input type="text" id="t_sergas" placeholder="Target Sergas" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target Segarrrrr</label><input type="text" id="t_segarr" placeholder="Target Segarr" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target Ceban</label><input type="text" id="t_ceban" placeholder="Input target Ceban" oninput="formatRupiahInput(this)"></div>
+                        <div class="form-group"><label>Target Ceban</label><input type="text" id="t_ceban" placeholder="Target Ceban" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <button class="btn btn-secondary" onclick="saveTargetPreset()">Simpan Target Shift</button>
                 </div>
@@ -176,7 +250,8 @@
                 </div>
                 <div class="form-group">
                     <label>Pilih Toko</label>
-                    <select id="kode_toko" onchange="saveKodeToko(); hitung()">
+                    <select id="kode_toko" onchange="handleTokoSelectChange(); lockAndSaveStore(); hitung();">
+                        <option value="CUSTOM">➕ --- INPUT TOKO LAINNYA ---</option>
                         <option value="R017 / SAT MALINGKERI [MGKI]">R017 - MALINGKERI [MGKI]</option>
                         <option value="R697 / SAT ANDI DJEMMA MKS [ANDJ]">R697 - ANDI DJEMMA MKS [ANDJ]</option>
                         <option value="R169 / SAT BTN TABARIA [BTAB]">R169 - BTN TABARIA [BTAB]</option>
@@ -199,6 +274,18 @@
                     </select>
                 </div>
             </div>
+
+            <div id="custom_toko_container" style="display: none;" class="grid-2">
+                <div class="form-group">
+                    <label>Kode Toko (Misal: R999)</label>
+                    <input type="text" id="custom_kode_toko" placeholder="Kode Toko" oninput="hitung()">
+                </div>
+                <div class="form-group">
+                    <label>Nama Toko (Misal: SAT HOS COKRO)</label>
+                    <input type="text" id="custom_nama_toko" placeholder="Nama Toko" oninput="hitung()">
+                </div>
+            </div>
+
             <div class="grid-2">
                 <div class="form-group">
                     <label>Shift</label>
@@ -214,9 +301,7 @@
                 </div>
             </div>
 
-            <!-- METRIK UTAMA -->
             <div class="section-title" style="margin-top: 15px;">📊 Target / Actual / ACV%</div>
-            
             <div class="field-block">
                 <label>SPD (Target / Actual)</label>
                 <div class="grid-2">
@@ -224,7 +309,6 @@
                     <input type="text" id="actual_spd" placeholder="Actual SPD" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
-
             <div class="field-block">
                 <label>STD (Target / Actual)</label>
                 <div class="grid-2">
@@ -232,7 +316,6 @@
                     <input type="text" id="actual_std" placeholder="Actual STD" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
-
             <div class="field-block">
                 <label>STD Member (Target / Actual)</label>
                 <div class="grid-2">
@@ -240,7 +323,6 @@
                     <input type="text" id="actual_std_mbr" placeholder="Actual Member" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
-
             <div class="field-block">
                 <label>New Member (Target / Actual)</label>
                 <div class="grid-2">
@@ -249,9 +331,7 @@
                 </div>
             </div>
 
-            <!-- PPS TARGET / ACTUAL -->
             <div class="section-title" style="margin-top: 15px;">📈 PPS Target / Actual / ACV%</div>
-
             <div class="field-block">
                 <label>APC (Otomatis: SPD / STD)</label>
                 <div class="grid-2">
@@ -259,7 +339,6 @@
                     <input type="text" id="actual_apc" class="readonly-input" readonly placeholder="Actual APC">
                 </div>
             </div>
-
             <div class="field-block">
                 <label>PWP (Target / Actual)</label>
                 <div class="grid-2">
@@ -267,7 +346,6 @@
                     <input type="text" id="actual_pwp" placeholder="Actual PWP" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
-
             <div class="field-block">
                 <label>PSM (Target / Actual)</label>
                 <div class="grid-2">
@@ -275,7 +353,6 @@
                     <input type="text" id="actual_psm" placeholder="Actual PSM" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
-
             <div class="field-block">
                 <label>Sergas (Target / Actual)</label>
                 <div class="grid-2">
@@ -283,7 +360,6 @@
                     <input type="text" id="actual_sergas" placeholder="Actual Sergas" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
-
             <div class="field-block">
                 <label>Segarrrrr (Target / Actual)</label>
                 <div class="grid-2">
@@ -291,7 +367,6 @@
                     <input type="text" id="actual_segarr" placeholder="Actual Segarrrrr" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
-
             <div class="field-block">
                 <label>Ceban... (Target / Actual)</label>
                 <div class="grid-2">
@@ -300,27 +375,15 @@
                 </div>
             </div>
 
-            <!-- PERFOAM / KONDISI BARANG -->
             <div class="section-title" style="margin-top: 15px;">📉 Perfoam</div>
             <div class="grid-3">
-                <div>
-                    <label>KOREKSI</label>
-                    <input type="text" id="koreksi" placeholder="-" oninput="formatKoreksiInput(this); hitung()">
-                </div>
-                <div>
-                    <label>BKE</label>
-                    <input type="text" id="bke" value="0" oninput="hitung()">
-                </div>
-                <div>
-                    <label>BR</label>
-                    <input type="text" id="br" value="0" oninput="hitung()">
-                </div>
+                <div><label>KOREKSI</label><input type="text" id="koreksi" placeholder="-" oninput="formatKoreksiInput(this); hitung()"></div>
+                <div><label>BKE</label><input type="text" id="bke" value="0" oninput="hitung()"></div>
+                <div><label>BR</label><input type="text" id="br" value="0" oninput="hitung()"></div>
             </div>
-
             <button class="btn btn-reset" onclick="resetFormActual()">🔄 Reset Input Actual</button>
         </div>
 
-        <!-- PREVIEW DAN TOMBOL COPY -->
         <div class="card">
             <div class="section-title">📋 Preview Laporan WA</div>
             <div class="preview-box" id="preview"></div>
@@ -332,15 +395,29 @@
     <!-- TAB 2: MONITORING PPS -->
     <div id="tab-monitoring" class="tab-content">
         <div class="card">
-            <div class="section-title">📊 Monitoring Harian PPS</div>
-            
-            <div class="grid-2" style="margin-bottom: 8px;">
-                <button class="btn btn-excel" onclick="exportToExcel()">📥 Export ke Excel</button>
-                <button class="btn btn-secondary" onclick="restoreFromOnlineDatabase()">🔄 Pulihkan / Tarik Data</button>
+            <div class="section-title">📊 Monitoring Harian PPS & Evaluasi</div>
+            <div class="field-block" style="margin-bottom: 12px;">
+                <label>🔍 Filter Periode Data:</label>
+                <div class="grid-2" style="margin-bottom: 8px;">
+                    <select id="filter_periode" onchange="applyFilterPeriode()">
+                        <option value="today">Hari Ini</option>
+                        <option value="7days">7 Hari Terakhir (Mingguan)</option>
+                        <option value="14days">14 Hari Terakhir (2 Mingguan)</option>
+                        <option value="this_month" selected>Bulan Ini (Bulanan)</option>
+                        <option value="custom">Kustom Tanggal...</option>
+                        <option value="all">Semua Data</option>
+                    </select>
+                    <button class="btn btn-secondary" style="margin-top:0;" onclick="listenStoreMonitoring()">🔄 Refresh Data</button>
+                </div>
+                <div id="custom_date_container" class="grid-2" style="display: none; margin-top: 8px;">
+                    <div><label>Dari Tanggal:</label><input type="date" id="filter_start_tgl" onchange="renderMonitoringTableFiltered()"></div>
+                    <div><label>Sampai Tanggal:</label><input type="date" id="filter_end_tgl" onchange="renderMonitoringTableFiltered()"></div>
+                </div>
             </div>
+
             <div class="grid-2" style="margin-bottom: 12px;">
-                <button class="btn btn-clean" onclick="clearTableScreenOnly()">🧹 Sembunyikan Layar</button>
-                <button class="btn btn-reset" style="margin-top:0;" onclick="clearAllDataPermanently()">🗑️ Hapus Permanen HP</button>
+                <button class="btn btn-excel" onclick="exportToExcel()">📥 Export Excel (.xls)</button>
+                <button class="btn btn-primary" onclick="exportToPDF()">📄 Export PDF</button>
             </div>
             
             <div class="table-responsive">
@@ -354,8 +431,6 @@
                             <th>PWP (Act/Gap)</th>
                             <th>Sergas (Act/Gap)</th>
                             <th>Segarr (Act/Gap)</th>
-                            <th>Ceban (Act/Gap)</th>
-                            <th>New Mbr</th>
                             <th class="no-export">Aksi</th>
                         </tr>
                     </thead>
@@ -365,31 +440,22 @@
         </div>
     </div>
 
-    <!-- TAB 3: EVALUASI KINERJA KASIR -->
+    <!-- TAB 3: KINERJA KASIR -->
     <div id="tab-kasir" class="tab-content">
         <div class="card">
             <div class="section-title">🔍 Pencarian Kinerja Kasir</div>
             <div class="form-group">
                 <label>Nama Kasir (Contoh: Salsa)</label>
-                <input type="text" id="search_kasir" placeholder="Ketik nama kasir (misal: salsa)">
+                <input type="text" id="search_kasir" placeholder="Ketik nama kasir">
             </div>
             <div class="grid-2">
-                <div class="form-group">
-                    <label>Dari Tanggal</label>
-                    <input type="date" id="search_start_tgl">
-                </div>
-                <div class="form-group">
-                    <label>Sampai Tanggal</label>
-                    <input type="date" id="search_end_tgl">
-                </div>
+                <div class="form-group"><label>Dari Tanggal</label><input type="date" id="search_start_tgl"></div>
+                <div class="form-group"><label>Sampai Tanggal</label><input type="date" id="search_end_tgl"></div>
             </div>
             <button class="btn btn-primary" onclick="evaluasiKasir()">🔎 Cek Pencapaian Kasir</button>
-
-            <!-- HASIL EVALUASI -->
             <div id="evaluasiHasil" style="display:none;" class="eval-card">
                 <h3 id="eval_nama_kasir" style="margin:0 0 6px 0; color:var(--primary);"></h3>
                 <div id="eval_periode" style="font-size:0.85em; color:var(--text-muted); margin-bottom:12px;"></div>
-                
                 <div class="preview-box" id="eval_rincian" style="background:#0f172a; color:#f8fafc;"></div>
                 <div id="eval_badge_container" style="text-align:center;"></div>
             </div>
@@ -397,66 +463,80 @@
     </div>
 </div>
 
-<script>
-    // URL Web App Deployment Terbaru Milikmu:
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZEvhx04JlSi1p7jWZ9WxJrXP82nWYqcMCGk4jpriU3LXgPwo48ZIaCDN0dILdwAxr/exec";
+<!-- TOMBOL FLOATING CHAT DI DASHBOARD -->
+<button class="chat-float-btn" id="chatFloatBtn" onclick="toggleChatModal()">
+    💬 Live Chat
+    <span class="chat-badge" id="chatUnreadBadge">0</span>
+</button>
 
-    // --- DARK MODE LOGIC ---
+<!-- JENDELA POP-UP CHAT WIDGET -->
+<div class="chat-modal" id="chatModal">
+    <div class="chat-modal-header">
+        <span>💬 Live Chat Antar Toko</span>
+        <button class="chat-modal-close" onclick="toggleChatModal()">✕</button>
+    </div>
+    <div class="chat-card" style="padding: 10px; height: calc(100% - 40px); display: flex; flex-direction: column;">
+        <div class="chat-messages" id="chatContainer"></div>
+        <div class="chat-input-group">
+            <input type="text" id="chatMessageInput" placeholder="Ketik pesan..." onkeypress="handleChatKeyPress(event)">
+            <button class="btn btn-primary" style="width: auto; padding: 0 14px;" onclick="sendChatMessage()">Kirim</button>
+        </div>
+    </div>
+</div>
+
+<!-- FIREBASE SDK v8 & PDF LIBRARIES -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZEvhx04JlSi1p7jWZ9WxJrXP82nWYqcMCGk4jpriU3LXgPwo48ZIaCDN0dILdwAxr/exec";
+    
+    const firebaseConfig = {
+        databaseURL: "https://laporan-harian-staff-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const STORE_PINS = {
+        "R017": "1234",
+        "R697": "5678",
+        "DEFAULT": "0000"
+    };
+
+    let cachedFirebaseData = [];
+    let unreadChatCount = 0;
+    let isChatOpen = false;
+
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         let theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
         localStorage.setItem('theme_staff', theme);
     }
-    if(localStorage.getItem('theme_staff') === 'dark') {
-        document.body.classList.add('dark-mode');
-    }
+    if(localStorage.getItem('theme_staff') === 'dark') document.body.classList.add('dark-mode');
 
-    // --- REGISTER SERVICE WORKER (PWA) ---
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Error:', err));
-        });
-    }
-
-    // --- LOGIKA ASLI (TIDAK ADA YANG DIUBAH) ---
     function switchTab(tabId, el) {
         document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         el.classList.add('active');
-        if (tabId === 'tab-monitoring') {
-            renderMonitoringTable();
-        }
+        if (tabId === 'tab-monitoring') listenStoreMonitoring();
     }
 
     function formatRupiahInput(el) {
         let val = el.value.replace(/\D/g, "");
-        if (val === "") {
-            el.value = "";
-            return;
-        }
+        if (val === "") { el.value = ""; return; }
         el.value = parseInt(val, 10).toLocaleString("id-ID");
     }
 
     function formatKoreksiInput(el) {
         let raw = el.value.trim();
         if (raw === "" || raw === "-") return;
-
-        let prefix = "";
-        if (raw.startsWith("-")) {
-            prefix = "-";
-        } else if (raw.startsWith("+")) {
-            prefix = "+";
-        }
-
+        let prefix = raw.startsWith("-") ? "-" : (raw.startsWith("+") ? "+" : "");
         let numStr = raw.replace(/\D/g, "");
-        if (numStr === "") {
-            el.value = prefix;
-            return;
-        }
-
-        let formattedNum = parseInt(numStr, 10).toLocaleString("id-ID");
-        el.value = prefix + formattedNum;
+        if (numStr === "") { el.value = prefix; return; }
+        el.value = prefix + parseInt(numStr, 10).toLocaleString("id-ID");
     }
 
     function getCleanNum(id) {
@@ -465,30 +545,72 @@
         return parseFloat(val.replace(/\./g, "").replace("+", "")) || 0;
     }
 
-    function getRawStr(id) {
-        return document.getElementById(id).value.trim();
+    function getRawStr(id) { return document.getElementById(id).value.trim(); }
+
+    function handleTokoSelectChange() {
+        let selectVal = document.getElementById("kode_toko").value;
+        document.getElementById("custom_toko_container").style.display = (selectVal === "CUSTOM") ? "grid" : "none";
+    }
+
+    function getRawStrKodeToko() {
+        let selectVal = document.getElementById("kode_toko").value;
+        if (selectVal === "CUSTOM") {
+            let kode = document.getElementById("custom_kode_toko").value.trim().toUpperCase();
+            let nama = document.getElementById("custom_nama_toko").value.trim().toUpperCase();
+            if (kode || nama) return `${kode} / ${nama}`;
+            return "CUSTOM / TOKO LAIN";
+        }
+        return selectVal;
+    }
+
+    function getCleanStoreId() {
+        let rawKode = getRawStrKodeToko();
+        return rawKode.split('/')[0].trim().replace(/[^a-zA-Z0-9]/g, "");
+    }
+
+    function lockAndSaveStore() {
+        let storeId = getCleanStoreId();
+        let currentLockedStore = localStorage.getItem("locked_store_id");
+
+        if (currentLockedStore === storeId) {
+            localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value);
+            listenStoreMonitoring();
+            return;
+        }
+
+        let expectedPin = STORE_PINS[storeId] || STORE_PINS["DEFAULT"];
+        let inputPin = prompt(`Masukkan PIN Keamanan untuk Toko ${storeId}:`);
+
+        if (inputPin === expectedPin) {
+            localStorage.setItem("locked_store_id", storeId);
+            localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value);
+            alert(`✅ Perangkat terkunci untuk Toko ${storeId}.`);
+            listenStoreMonitoring();
+        } else {
+            alert("❌ PIN Salah!");
+            let previousSaved = localStorage.getItem("saved_kode_toko");
+            if (previousSaved) {
+                document.getElementById("kode_toko").value = previousSaved;
+                handleTokoSelectChange();
+            }
+        }
     }
 
     function getDisplayDate(id) {
         let val = document.getElementById(id).value;
         if (!val) return "";
         let parts = val.split('-');
-        if (parts.length === 3) {
-            return `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}`;
-        }
-        return val;
+        return (parts.length === 3) ? `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}` : val;
     }
 
     function fmt(val) {
         if (val === "" || val === null || isNaN(val)) return "0";
-        let num = Math.round(val);
-        return num.toLocaleString("id-ID");
+        return Math.round(val).toLocaleString("id-ID");
     }
 
     function calcAcv(targetNum, actualNum) {
         if (!targetNum || isNaN(actualNum) || actualNum === 0) {
-            if (targetNum && actualNum === 0) return "0%";
-            return "";
+            return (targetNum && actualNum === 0) ? "0%" : "";
         }
         let acv = (actualNum / targetNum) * 100;
         return Number.isInteger(acv) ? acv + "%" : acv.toFixed(2).replace('.', ',') + "%";
@@ -507,17 +629,14 @@
         const savedKodeToko = localStorage.getItem("saved_kode_toko");
         if (savedKodeToko) {
             document.getElementById("kode_toko").value = savedKodeToko;
+            handleTokoSelectChange();
         }
 
         loadTargetPreset();
         applyShiftTarget();
-        renderMonitoringTable();
+        listenStoreMonitoring();
+        listenGlobalChatBackground();
     });
-
-    function saveKodeToko() {
-        let kt = document.getElementById("kode_toko").value;
-        localStorage.setItem("saved_kode_toko", kt);
-    }
 
     function saveTargetPreset() {
         const shiftNum = document.getElementById("targetShiftSelect").value;
@@ -551,16 +670,6 @@
             document.getElementById("t_sergas").value = data.sergas || "";
             document.getElementById("t_segarr").value = data.segarr || "";
             document.getElementById("t_ceban").value = data.ceban || "";
-        } else {
-            document.getElementById("t_spd").value = "";
-            document.getElementById("t_std").value = "";
-            document.getElementById("t_std_mbr").value = "";
-            document.getElementById("t_new_mbr").value = "";
-            document.getElementById("t_pwp").value = "";
-            document.getElementById("t_psm").value = "";
-            document.getElementById("t_sergas").value = "";
-            document.getElementById("t_segarr").value = "";
-            document.getElementById("t_ceban").value = "";
         }
     }
 
@@ -578,16 +687,6 @@
             document.getElementById("target_sergas").value = data.sergas || "";
             document.getElementById("target_segarr").value = data.segarr || "";
             document.getElementById("target_ceban").value = data.ceban || "";
-        } else {
-            document.getElementById("target_spd").value = "";
-            document.getElementById("target_std").value = "";
-            document.getElementById("target_std_mbr").value = "";
-            document.getElementById("target_new_mbr").value = "";
-            document.getElementById("target_pwp").value = "";
-            document.getElementById("target_psm").value = "";
-            document.getElementById("target_sergas").value = "";
-            document.getElementById("target_segarr").value = "";
-            document.getElementById("target_ceban").value = "";
         }
         hitung();
     }
@@ -604,63 +703,25 @@
         document.getElementById("target_apc").value = t_apc ? fmt(t_apc) : "";
         document.getElementById("actual_apc").value = a_apc ? fmt(a_apc) : "";
 
-        let tglFormatted = getDisplayDate("tgl");
-        let text = `Tgl ${tglFormatted}\n`;
-        let kodeToko = getRawStr("kode_toko");
-        if (kodeToko) {
-            text += `Kode toko / Toko : ${kodeToko}\n`;
-        }
+        let text = `Tgl ${getDisplayDate("tgl")}\n`;
+        let kodeToko = getRawStrKodeToko();
+        if (kodeToko) text += `Kode toko / Toko : ${kodeToko}\n`;
         text += `Shif : ${getRawStr("shift")}\n`;
         text += `Staf / kasir : ${getRawStr("crew")}\n`;
         text += `*Target /actual/avc%*\n`;
 
-        let spd_t_str = getRawStr("target_spd");
-        let spd_a_str = getRawStr("actual_spd");
-        text += `SPD: ${spd_t_str}/${spd_a_str}/${calcAcv(t_spd, a_spd)}\n`;
-
-        let std_t_str = getRawStr("target_std");
-        let std_a_str = getRawStr("actual_std");
-        text += `STD: ${std_t_str}/${std_a_str}/${calcAcv(t_std, a_std)}\n`;
-
-        let std_m_t = getCleanNum("target_std_mbr");
-        let std_m_a = getCleanNum("actual_std_mbr");
-        text += `STD Member: ${getRawStr("target_std_mbr")}/${getRawStr("actual_std_mbr")}/${calcAcv(std_m_t, std_m_a)}\n`;
-
-        let new_m_t = getCleanNum("target_new_mbr");
-        let new_m_a = getCleanNum("actual_new_mbr");
-        let new_m_acv = calcAcv(new_m_t, new_m_a);
-        text += `New member : ${getRawStr("target_new_mbr")}/${getRawStr("actual_new_mbr")}${new_m_acv ? '/' + new_m_acv : ''}\n`;
+        text += `SPD: ${getRawStr("target_spd")}/${getRawStr("actual_spd")}/${calcAcv(t_spd, a_spd)}\n`;
+        text += `STD: ${getRawStr("target_std")}/${getRawStr("actual_std")}/${calcAcv(t_std, a_std)}\n`;
+        text += `STD Member: ${getRawStr("target_std_mbr")}/${getRawStr("actual_std_mbr")}/${calcAcv(getCleanNum("target_std_mbr"), getCleanNum("actual_std_mbr"))}\n`;
+        text += `New member : ${getRawStr("target_new_mbr")}/${getRawStr("actual_new_mbr")}\n`;
 
         text += `📈*Pps target / actual/ACV%*\n`;
         text += `Apc : ${fmt(t_apc)}/${fmt(a_apc)}/${calcAcv(t_apc, a_apc)}\n`;
-
-        let pwp_t = getCleanNum("target_pwp");
-        let pwp_a = getCleanNum("actual_pwp");
-        text += `Pwp: ${getRawStr("target_pwp")}/${getRawStr("actual_pwp")}/${calcAcv(pwp_t, pwp_a)}\n`;
-
-        let psm_t = getCleanNum("target_psm");
-        let psm_a = getCleanNum("actual_psm");
-        text += `PSM: ${getRawStr("target_psm")}/${getRawStr("actual_psm")}/${calcAcv(psm_t, psm_a)}\n`;
-
-        let sergas_t = getCleanNum("target_sergas");
-        let sergas_a = getCleanNum("actual_sergas");
-        text += `Sergas: ${getRawStr("target_sergas")}/${getRawStr("actual_sergas")}/${calcAcv(sergas_t, sergas_a)}\n`;
-
-        let segarr_t = getCleanNum("target_segarr");
-        let segarr_a = getCleanNum("actual_segarr");
-        text += `Segarrrrr: ${getRawStr("target_segarr")}/${getRawStr("actual_segarr")}/${calcAcv(segarr_t, segarr_a)}\n`;
-
-        let ceban_t = getCleanNum("target_ceban");
-        let ceban_a = getCleanNum("actual_ceban");
-        let ceban_t_str = getRawStr("target_ceban");
-        let ceban_a_str = getRawStr("actual_ceban");
-        let ceban_acv = calcAcv(ceban_t, ceban_a);
-        
-        if (ceban_t_str || ceban_a_str) {
-            text += `Ceban...: ${ceban_t_str || '0'}/${ceban_a_str || '0'}${ceban_acv ? '/' + ceban_acv : ''}\n\n`;
-        } else {
-            text += `Ceban...: 0\n\n`;
-        }
+        text += `Pwp: ${getRawStr("target_pwp")}/${getRawStr("actual_pwp")}/${calcAcv(getCleanNum("target_pwp"), getCleanNum("actual_pwp"))}\n`;
+        text += `PSM: ${getRawStr("target_psm")}/${getRawStr("actual_psm")}/${calcAcv(getCleanNum("target_psm"), getCleanNum("actual_psm"))}\n`;
+        text += `Sergas: ${getRawStr("target_sergas")}/${getRawStr("actual_sergas")}/${calcAcv(getCleanNum("target_sergas"), getCleanNum("actual_sergas"))}\n`;
+        text += `Segarrrrr: ${getRawStr("target_segarr")}/${getRawStr("actual_segarr")}/${calcAcv(getCleanNum("target_segarr"), getCleanNum("actual_segarr"))}\n`;
+        text += `Ceban...: ${getRawStr("target_ceban") || '0'}/${getRawStr("actual_ceban") || '0'}\n\n`;
 
         text += `📉Perfoam \n`;
         text += `KOREKSI : ${getRawStr("koreksi") || '-'}\n`;
@@ -671,7 +732,7 @@
     }
 
     function resetFormActual() {
-        if (confirm("Kosongkan semua inputan Actual untuk laporan baru?")) {
+        if (confirm("Kosongkan semua inputan Actual?")) {
             const actualIds = ["actual_spd", "actual_std", "actual_std_mbr", "actual_new_mbr", "actual_pwp", "actual_psm", "actual_sergas", "actual_segarr", "actual_ceban"];
             actualIds.forEach(id => document.getElementById(id).value = "");
             document.getElementById("koreksi").value = "";
@@ -683,266 +744,295 @@
     }
 
     function validateTargetFilled() {
-        let currentShift = getRawStr("shift");
-        let t_spd = getCleanNum("target_spd");
-        let t_std = getCleanNum("target_std");
-        let t_psm = getCleanNum("target_psm");
-        let t_pwp = getCleanNum("target_pwp");
-
-        if (t_spd === 0 && t_std === 0 && t_psm === 0 && t_pwp === 0) {
-            alert(`⚠️ Target Shift ${currentShift} belum diisi!\n\nHarap buka menu "Pengaturan Target Shift", isi target shift lalu klik "Simpan Target Shift" terlebih dahulu.`);
+        if (getCleanNum("target_spd") === 0 && getCleanNum("target_std") === 0 && getCleanNum("target_psm") === 0) {
+            alert(`⚠️ Target Shift belum diisi!`);
             return false;
         }
         return true;
     }
 
-    function saveToMonitoring() {
-        let tgl = getDisplayDate("tgl");
-        let shift = getRawStr("shift");
-        let kode_toko = getRawStr("kode_toko");
-        let crew = getRawStr("crew") || "-";
-        
-        let psm_act = getCleanNum("actual_psm");
-        let psm_tgt = getCleanNum("target_psm");
-        
-        let pwp_act = getCleanNum("actual_pwp");
-        let pwp_tgt = getCleanNum("target_pwp");
-        
-        let sergas_act = getCleanNum("actual_sergas");
-        let sergas_tgt = getCleanNum("target_sergas");
-        
-        let segarr_act = getCleanNum("actual_segarr");
-        let segarr_tgt = getCleanNum("target_segarr");
-        
-        let ceban_act = getCleanNum("actual_ceban");
-        let ceban_tgt = getCleanNum("target_ceban");
-        
-        let new_mbr = getCleanNum("actual_new_mbr");
+    function saveToFirebaseRealtime() {
+        let storeId = getCleanStoreId();
+        let tglKey = document.getElementById("tgl").value;
+        let shiftKey = getRawStr("shift");
+        if (!tglKey || !shiftKey) return;
 
-        if (!tgl) return;
+        let payload = {
+            tgl: getDisplayDate("tgl"),
+            shift: shiftKey,
+            crew: getRawStr("crew") || "-",
+            psm_act: getCleanNum("actual_psm"),
+            psm_tgt: getCleanNum("target_psm"),
+            pwp_act: getCleanNum("actual_pwp"),
+            pwp_tgt: getCleanNum("target_pwp"),
+            sergas_act: getCleanNum("actual_sergas"),
+            sergas_tgt: getCleanNum("target_sergas"),
+            segarr_act: getCleanNum("actual_segarr"),
+            segarr_tgt: getCleanNum("target_segarr"),
+            updatedAt: firebase.database.ServerValue.TIMESTAMP
+        };
 
-        let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-        dataList = dataList.filter(item => !(item.tgl === tgl && item.shift === shift && item.crew === crew));
-        
-        dataList.push({
-            id: Date.now(),
-            kode_toko: kode_toko,
-            tgl: tgl,
-            shift: shift,
-            crew: crew,
-            psm: psm_act,
-            psm_tgt: psm_tgt,
-            pwp: pwp_act,
-            pwp_tgt: pwp_tgt,
-            sergas: sergas_act,
-            sergas_tgt: sergas_tgt,
-            segarr: segarr_act,
-            segarr_tgt: segarr_tgt,
-            ceban: ceban_act,
-            ceban_tgt: ceban_tgt,
-            new_mbr: new_mbr
-        });
-        localStorage.setItem("pps_monitoring_data", JSON.stringify(dataList));
-
-        if (GOOGLE_SCRIPT_URL && kode_toko) {
-            let payload = {
-                kode_toko: kode_toko,
-                tgl: tgl,
-                shift: shift,
-                crew: crew,
-                psm: psm_act,
-                pwp: pwp_act,
-                sergas: sergas_act,
-                segarr: segarr_act,
-                new_mbr: new_mbr
-            };
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify(payload)
-            }).catch(e => console.log("Gagal sync online:", e));
-        }
+        database.ref(`stores/${storeId}/reports/${tglKey}/shift_${shiftKey}`).set(payload);
     }
 
-    function formatGap(act, tgt) {
-        if (tgt === 0 || !tgt) return `${fmt(act)}`;
-        let gap = act - tgt;
+    function formatGapCell(act, tgt) {
+        let actNum = act || 0;
+        let tgtNum = tgt || 0;
+        if (tgtNum === 0) return `${fmt(actNum)}`;
+        
+        let gap = actNum - tgtNum;
         let gapStr = gap >= 0 ? `(+${fmt(gap)})` : `(${fmt(gap)})`;
-        let colorClass = gap >= 0 ? "gap-plus" : "gap-minus";
-        return `${fmt(act)} <span class="${colorClass}">${gapStr}</span>`;
+        let colorStyle = gap < 0 ? 'color: #ef4444; font-weight: bold;' : 'color: #10b981; font-weight: bold;';
+        return `<b>${fmt(actNum)}</b> <span style="${colorStyle}">${gapStr}</span>`;
     }
 
-    function renderMonitoringTable() {
-        let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
+    function applyFilterPeriode() {
+        document.getElementById("custom_date_container").style.display = (document.getElementById("filter_periode").value === "custom") ? "grid" : "none";
+        renderMonitoringTableFiltered();
+    }
+
+    function renderMonitoringTableFiltered() {
         let tbody = document.getElementById("monitoringTableBody");
         tbody.innerHTML = "";
 
-        if (dataList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="10" style="padding:15px; color:var(--text-muted);">Belum ada data di layar. Klik tombol <b>"🔄 Pulihkan / Tarik Data"</b> untuk memunculkan riwayat laporan toko dari server.</td></tr>`;
+        if (cachedFirebaseData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="padding:15px; color:var(--text-muted);">Belum ada data laporan untuk toko ini.</td></tr>`;
             return;
         }
 
-        let groupedByTgl = {};
-        dataList.forEach(item => {
-            if (!groupedByTgl[item.tgl]) groupedByTgl[item.tgl] = [];
-            groupedByTgl[item.tgl].push(item);
+        let filterVal = document.getElementById("filter_periode").value;
+        let now = new Date();
+        let startDate = null, endDate = null;
+
+        if (filterVal === "today") {
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+        } else if (filterVal === "7days") {
+            startDate = new Date(); startDate.setDate(now.getDate() - 7); startDate.setHours(0,0,0,0);
+        } else if (filterVal === "14days") {
+            startDate = new Date(); startDate.setDate(now.getDate() - 14); startDate.setHours(0,0,0,0);
+        } else if (filterVal === "this_month") {
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        } else if (filterVal === "custom") {
+            let sVal = document.getElementById("filter_start_tgl").value;
+            let eVal = document.getElementById("filter_end_tgl").value;
+            if (sVal) startDate = new Date(sVal);
+            if (eVal) { endDate = new Date(eVal); endDate.setHours(23, 59, 59); }
+        }
+
+        let filteredList = cachedFirebaseData.filter(item => {
+            if (!startDate && !endDate) return true;
+            let itemDate = parseDateStr(item.tgl);
+            if (!itemDate) return true;
+            if (startDate && itemDate < startDate) return false;
+            if (endDate && itemDate > endDate) return false;
+            return true;
         });
 
-        let grandTotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, ceban: 0, new_mbr: 0 };
+        if (filteredList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="padding:15px; color:var(--text-muted);">Tidak ada data pada periode ini.</td></tr>`;
+            return;
+        }
 
-        Object.keys(groupedByTgl).forEach(tgl => {
-            let items = groupedByTgl[tgl];
-            items.sort((a, b) => parseInt(a.shift) - parseInt(b.shift));
+        let grandTotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0 };
 
-            let subtotal = { psm: 0, pwp: 0, sergas: 0, segarr: 0, ceban: 0, new_mbr: 0 };
-
-            items.forEach(item => {
-                subtotal.psm += item.psm;
-                subtotal.pwp += item.pwp;
-                subtotal.sergas += item.sergas;
-                subtotal.segarr += item.segarr;
-                subtotal.ceban += (item.ceban || 0);
-                subtotal.new_mbr += item.new_mbr;
-
-                let displayCrew = item.crew && item.crew !== "undefined" ? item.crew : "-";
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${item.tgl}</td>
-                        <td>Shift ${item.shift}</td>
-                        <td><b>${displayCrew}</b></td>
-                        <td>${formatGap(item.psm, item.psm_tgt)}</td>
-                        <td>${formatGap(item.pwp, item.pwp_tgt)}</td>
-                        <td>${formatGap(item.sergas, item.sergas_tgt)}</td>
-                        <td>${formatGap(item.segarr, item.segarr_tgt)}</td>
-                        <td>${formatGap(item.ceban || 0, item.ceban_tgt)}</td>
-                        <td>${fmt(item.new_mbr)}</td>
-                        <td class="no-export"><button class="btn-delete-row" onclick="deleteSingleRow(${item.id})">✕</button></td>
-                    </tr>
-                `;
-            });
-
-            grandTotal.psm += subtotal.psm;
-            grandTotal.pwp += subtotal.pwp;
-            grandTotal.sergas += subtotal.sergas;
-            grandTotal.segarr += subtotal.segarr;
-            grandTotal.ceban += subtotal.ceban;
-            grandTotal.new_mbr += subtotal.new_mbr;
+        filteredList.forEach(item => {
+            grandTotal.psm += (item.psm_act || 0);
+            grandTotal.pwp += (item.pwp_act || 0);
+            grandTotal.sergas += (item.sergas_act || 0);
+            grandTotal.segarr += (item.segarr_act || 0);
 
             tbody.innerHTML += `
-                <tr class="tr-subtotal">
-                    <td colspan="3">Total (${tgl})</td>
-                    <td>${fmt(subtotal.psm)}</td>
-                    <td>${fmt(subtotal.pwp)}</td>
-                    <td>${fmt(subtotal.sergas)}</td>
-                    <td>${fmt(subtotal.segarr)}</td>
-                    <td>${fmt(subtotal.ceban)}</td>
-                    <td>${fmt(subtotal.new_mbr)}</td>
-                    <td class="no-export">-</td>
+                <tr>
+                    <td>${item.tgl}</td>
+                    <td>Shift ${item.shift}</td>
+                    <td><b>${item.crew}</b></td>
+                    <td>${formatGapCell(item.psm_act, item.psm_tgt)}</td>
+                    <td>${formatGapCell(item.pwp_act, item.pwp_tgt)}</td>
+                    <td>${formatGapCell(item.sergas_act, item.sergas_tgt)}</td>
+                    <td>${formatGapCell(item.segarr_act, item.segarr_tgt)}</td>
+                    <td class="no-export">
+                        <button class="btn-delete-row" onclick="deleteFirebaseRow('${item.tglKey}', '${item.shift}')">✕</button>
+                    </td>
                 </tr>
             `;
         });
 
         tbody.innerHTML += `
             <tr class="tr-grandtotal">
-                <td colspan="3">GRAND TOTAL</td>
+                <td colspan="3">TOTAL PERIODE TERPILIH</td>
                 <td>${fmt(grandTotal.psm)}</td>
                 <td>${fmt(grandTotal.pwp)}</td>
                 <td>${fmt(grandTotal.sergas)}</td>
                 <td>${fmt(grandTotal.segarr)}</td>
-                <td>${fmt(grandTotal.ceban)}</td>
-                <td>${fmt(grandTotal.new_mbr)}</td>
                 <td class="no-export">-</td>
             </tr>
         `;
     }
 
-    function clearTableScreenOnly() {
-        let tbody = document.getElementById("monitoringTableBody");
-        tbody.innerHTML = `<tr><td colspan="10" style="padding:15px; color:var(--text-muted);">Tampilan tabel disembunyikan. Klik <b>"🔄 Pulihkan / Tarik Data"</b> untuk menampilkan kembali data laporan dari server.</td></tr>`;
+    function listenStoreMonitoring() {
+        let storeId = getCleanStoreId();
+        database.ref(`stores/${storeId}/reports`).on('value', (snapshot) => {
+            cachedFirebaseData = [];
+            let data = snapshot.val();
+            if (data) {
+                Object.keys(data).sort().reverse().forEach(tglKey => {
+                    let shifts = data[tglKey];
+                    Object.keys(shifts).forEach(sKey => {
+                        let item = shifts[sKey];
+                        item.tglKey = tglKey;
+                        cachedFirebaseData.push(item);
+                    });
+                });
+            }
+            renderMonitoringTableFiltered();
+        });
     }
 
-    window.onGoogleSheetDataReceived = function(serverData) {
-        if (serverData && Array.isArray(serverData) && serverData.length > 0) {
-            let localData = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
+    function deleteFirebaseRow(tglKey, shiftNum) {
+        if (confirm(`Hapus data laporan Shift ${shiftNum}?`)) {
+            let storeId = getCleanStoreId();
+            database.ref(`stores/${storeId}/reports/${tglKey}/shift_${shiftNum}`).remove();
+        }
+    }
+
+    // --- LOGIKA FLOATING LIVE CHAT & NOTIFIKASI KEDIP ---
+    function toggleChatModal() {
+        let modal = document.getElementById("chatModal");
+        let btn = document.getElementById("chatFloatBtn");
+        let badge = document.getElementById("chatUnreadBadge");
+
+        if (isChatOpen) {
+            modal.style.display = "none";
+            isChatOpen = false;
+        } else {
+            modal.style.display = "flex";
+            isChatOpen = true;
+            // Reset Notifikasi saat dibuka
+            unreadChatCount = 0;
+            badge.style.display = "none";
+            btn.classList.remove("unread-blink");
             
-            serverData.forEach(sItem => {
-                let exists = localData.some(lItem => lItem.tgl === sItem.tgl && String(lItem.shift) === String(sItem.shift) && lItem.crew === sItem.crew);
-                if (!exists) {
-                    localData.push({
-                        id: Date.now() + Math.random(),
-                        kode_toko: sItem.kode_toko,
-                        tgl: sItem.tgl,
-                        shift: sItem.shift,
-                        crew: sItem.crew || "-",
-                        psm: sItem.psm || 0,
-                        psm_tgt: 0,
-                        pwp: sItem.pwp || 0,
-                        pwp_tgt: 0,
-                        sergas: sItem.sergas || 0,
-                        sergas_tgt: 0,
-                        segarr: sItem.segarr || 0,
-                        segarr_tgt: 0,
-                        ceban: 0,
-                        ceban_tgt: 0,
-                        new_mbr: sItem.new_mbr || 0
-                    });
-                }
+            let chatContainer = document.getElementById("chatContainer");
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    }
+
+    function sendChatMessage() {
+        let messageInput = document.getElementById("chatMessageInput");
+        let text = messageInput.value.trim();
+        let senderStore = getCleanStoreId();
+        let senderName = getRawStr("crew") || "Staf";
+
+        if (!text) return;
+
+        database.ref("global_chats").push({
+            store: senderStore,
+            sender: senderName,
+            text: text,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        }).then(() => { messageInput.value = ""; });
+    }
+
+    function handleChatKeyPress(e) {
+        if (e.key === "Enter") sendChatMessage();
+    }
+
+    let isInitialChatLoad = true;
+    function listenGlobalChatBackground() {
+        let chatContainer = document.getElementById("chatContainer");
+        let currentStore = getCleanStoreId();
+        let btn = document.getElementById("chatFloatBtn");
+        let badge = document.getElementById("chatUnreadBadge");
+
+        database.ref("global_chats").limitToLast(50).on("value", (snapshot) => {
+            let data = snapshot.val();
+            chatContainer.innerHTML = "";
+
+            if (!data) {
+                chatContainer.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:0.85em; margin-top:20px;">Belum ada obrolan. Mulai sapa toko lain!</div>`;
+                return;
+            }
+
+            let msgKeys = Object.keys(data);
+            
+            // Logika Notifikasi jika ada pesan baru saat widget tertutup
+            if (!isInitialChatLoad && !isChatOpen) {
+                unreadChatCount++;
+                badge.innerText = unreadChatCount;
+                badge.style.display = "inline-block";
+                btn.classList.add("unread-blink");
+            }
+            isInitialChatLoad = false;
+
+            msgKeys.forEach(msgId => {
+                let msg = data[msgId];
+                let isMine = (msg.store === currentStore);
+                let timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+                chatContainer.innerHTML += `
+                    <div class="chat-bubble ${isMine ? 'mine' : 'other'}">
+                        <div class="chat-header-info">
+                            <span>${msg.sender} (${msg.store})</span>
+                            <button class="btn-delete-chat" onclick="deleteChatMessage('${msgId}')">✕</button>
+                        </div>
+                        <div class="chat-text">${escapeHtml(msg.text)}</div>
+                        <div class="chat-time">${timeStr}</div>
+                    </div>
+                `;
             });
 
-            localStorage.setItem("pps_monitoring_data", JSON.stringify(localData));
-            renderMonitoringTable();
-            alert(`✅ Berhasil menarik ${serverData.length} data laporan toko dari Google Sheets!`);
-        } else {
-            renderMonitoringTable();
-            alert(`Belum ada riwayat data di Google Sheets untuk toko ini.`);
-        }
-    };
-
-    function restoreFromOnlineDatabase() {
-        let kodeToko = getRawStr("kode_toko");
-        let tbody = document.getElementById("monitoringTableBody");
-
-        if (!kodeToko) {
-            alert("Pilih Toko terlebih dahulu di tab Input Laporan!");
-            return;
-        }
-
-        tbody.innerHTML = `<tr><td colspan="10" style="padding:15px; color:var(--primary);">Sedang menarik data dari Google Sheets...</td></tr>`;
-
-        let oldScript = document.getElementById("jsonp_gsheet_script");
-        if (oldScript) oldScript.remove();
-
-        let script = document.createElement("script");
-        script.id = "jsonp_gsheet_script";
-        script.src = `${GOOGLE_SCRIPT_URL}?kode_toko=${encodeURIComponent(kodeToko)}&callback=onGoogleSheetDataReceived`;
-        
-        script.onerror = function() {
-            renderMonitoringTable();
-            alert("Gagal terhubung ke Google Sheets. Pastikan izin akses Google Script sudah disetel 'Anyone' (Siapa saja).");
-        };
-
-        document.body.appendChild(script);
-    }
-
-    function clearAllDataPermanently() {
-        if (confirm("PERINGATAN: Apakah Anda yakin ingin MENGHAPUS PERMANEN seluruh riwayat data laporan di HP ini?")) {
-            if (confirm("Konfirmasi sekali lagi untuk menghapus semua data?")) {
-                localStorage.removeItem("pps_monitoring_data");
-                renderMonitoringTable();
-                alert("Semua data monitoring lokal telah dibersihkan.");
+            if (isChatOpen) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
+        });
+    }
+
+    function deleteChatMessage(msgId) {
+        if (confirm("Hapus pesan ini dari percakapan?")) {
+            database.ref(`global_chats/${msgId}`).remove();
         }
     }
 
-    function deleteSingleRow(id) {
-        if (confirm("Hapus baris laporan shift ini dari tabel?")) {
-            let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-            dataList = dataList.filter(item => item.id !== id);
-            localStorage.setItem("pps_monitoring_data", JSON.stringify(dataList));
-            renderMonitoringTable();
-        }
+    function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function copyWA() {
+        if (!validateTargetFilled()) return;
+        saveToFirebaseRealtime();
+        navigator.clipboard.writeText(document.getElementById("preview").innerText).then(() => {
+            alert("✅ Laporan tersalin ke Clipboard & tersimpan ke Firebase!");
+        });
+    }
+
+    function shareToWA() {
+        if (!validateTargetFilled()) return;
+        saveToFirebaseRealtime();
+        window.location.href = "whatsapp://send?text=" + encodeURIComponent(document.getElementById("preview").innerText);
+    }
+
+    function exportToExcel() {
+        let table = document.getElementById("monitoringTable").cloneNode(true);
+        table.querySelectorAll('.no-export').forEach(el => el.remove());
+        let excelData = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body>${table.outerHTML}</body></html>`;
+        let blob = new Blob([excelData], { type: 'application/vnd.ms-excel' });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = `Monitoring_PPS_${getCleanStoreId()}.xls`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        let storeId = getCleanStoreId();
+        doc.text(`Laporan Monitoring PPS Toko - ${storeId}`, 14, 15);
+        doc.autoTable({ html: '#monitoringTable', startY: 20, columns: [0, 1, 2, 3, 4, 5, 6] });
+        doc.save(`Monitoring_PPS_${storeId}.pdf`);
     }
 
     function parseDateStr(str) {
@@ -961,23 +1051,15 @@
         let startVal = document.getElementById("search_start_tgl").value;
         let endVal = document.getElementById("search_end_tgl").value;
 
-        if (!search) {
-            alert("Silakan masukkan Nama Kasir terlebih dahulu (contoh: Salsa)!");
-            return;
-        }
+        if (!search) { alert("Silakan masukkan Nama Kasir!"); return; }
 
         let startDate = startVal ? new Date(startVal) : null;
         let endDate = endVal ? new Date(endVal) : null;
         if (endDate) endDate.setHours(23, 59, 59, 999);
 
-        let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-        
-        let filtered = dataList.filter(item => {
+        let filtered = cachedFirebaseData.filter(item => {
             if (!item.crew) return false;
-            let crewLower = item.crew.toLowerCase();
-            let matchName = crewLower.includes(search);
-            if (!matchName) return false;
-
+            if (!item.crew.toLowerCase().includes(search)) return false;
             if (startDate || endDate) {
                 let itemDate = parseDateStr(item.tgl);
                 if (itemDate) {
@@ -988,121 +1070,37 @@
             return true;
         });
 
-        if (filtered.length === 0) {
-            alert(`Tidak ditemukan data penjualan untuk kasir "${search}" pada periode tersebut. Coba klik tombol "Pulihkan / Tarik Data" di tab Monitoring terlebih dahulu.`);
-            return;
-        }
+        if (filtered.length === 0) { alert(`Tidak ada data untuk kasir "${search}".`); return; }
 
-        let totalAct = { psm: 0, pwp: 0, sergas: 0, segarr: 0, ceban: 0, new_mbr: 0 };
-        let totalTgt = { psm: 0, pwp: 0, sergas: 0, segarr: 0, ceban: 0 };
+        let totalAct = { psm: 0, pwp: 0, sergas: 0, segarr: 0 };
+        let totalTgt = { psm: 0, pwp: 0, sergas: 0, segarr: 0 };
 
         filtered.forEach(item => {
-            totalAct.psm += item.psm;
-            totalTgt.psm += (item.psm_tgt || 0);
-            
-            totalAct.pwp += item.pwp;
-            totalTgt.pwp += (item.pwp_tgt || 0);
-
-            totalAct.sergas += item.sergas;
-            totalTgt.sergas += (item.sergas_tgt || 0);
-
-            totalAct.segarr += item.segarr;
-            totalTgt.segarr += (item.segarr_tgt || 0);
-
-            totalAct.ceban += (item.ceban || 0);
-            totalTgt.ceban += (item.ceban_tgt || 0);
-
-            totalAct.new_mbr += item.new_mbr;
+            totalAct.psm += (item.psm_act || 0); totalTgt.psm += (item.psm_tgt || 0);
+            totalAct.pwp += (item.pwp_act || 0); totalTgt.pwp += (item.pwp_tgt || 0);
+            totalAct.sergas += (item.sergas_act || 0); totalTgt.sergas += (item.sergas_tgt || 0);
+            totalAct.segarr += (item.segarr_act || 0); totalTgt.segarr += (item.segarr_tgt || 0);
         });
 
         let psmGap = totalAct.psm - totalTgt.psm;
         let pwpGap = totalAct.pwp - totalTgt.pwp;
         let sergasGap = totalAct.sergas - totalTgt.sergas;
         let segarrGap = totalAct.segarr - totalTgt.segarr;
-        let cebanGap = totalAct.ceban - totalTgt.ceban;
 
-        let plusCount = (psmGap >= 0 ? 1 : 0) + (pwpGap >= 0 ? 1 : 0) + (sergasGap >= 0 ? 1 : 0) + (segarrGap >= 0 ? 1 : 0) + (cebanGap >= 0 ? 1 : 0);
-        let isHebat = plusCount >= 3;
+        let isHebat = ((psmGap >= 0 ? 1 : 0) + (pwpGap >= 0 ? 1 : 0) + (sergasGap >= 0 ? 1 : 0) + (segarrGap >= 0 ? 1 : 0)) >= 2;
 
         document.getElementById("eval_nama_kasir").innerText = `👤 Kasir: ${search.toUpperCase()}`;
-        document.getElementById("eval_periode").innerText = `Periode: ${startVal || 'Awal'} s/d ${endVal || 'Sekarang'} (${filtered.length} Shift Tercatat)`;
+        document.getElementById("eval_periode").innerText = `Periode: ${startVal || 'Awal'} s/d ${endVal || 'Sekarang'} (${filtered.length} Shift)`;
+        document.getElementById("eval_rincian").innerText = `📊 Pencapaian Kasir:\n` +
+            `• PSM       : ${fmt(totalAct.psm)} (Target: ${fmt(totalTgt.psm)}) -> Gap: ${psmGap >= 0 ? '+' : ''}${fmt(psmGap)}\n` +
+            `• PWP       : ${fmt(totalAct.pwp)} (Target: ${fmt(totalTgt.pwp)}) -> Gap: ${pwpGap >= 0 ? '+' : ''}${fmt(pwpGap)}\n` +
+            `• Sergas    : ${fmt(totalAct.sergas)} (Target: ${fmt(totalTgt.sergas)}) -> Gap: ${sergasGap >= 0 ? '+' : ''}${fmt(sergasGap)}\n` +
+            `• Segarrrrr : ${fmt(totalAct.segarr)} (Target: ${fmt(totalTgt.segarr)}) -> Gap: ${segarrGap >= 0 ? '+' : ''}${fmt(segarrGap)}`;
 
-        let rincianText = `📊 Pencapaian Kasir:\n` +
-                          `• PSM       : ${fmt(totalAct.psm)} (Target: ${fmt(totalTgt.psm)}) -> Gap: ${psmGap >= 0 ? '+' : ''}${fmt(psmGap)}\n` +
-                          `• PWP       : ${fmt(totalAct.pwp)} (Target: ${fmt(totalTgt.pwp)}) -> Gap: ${pwpGap >= 0 ? '+' : ''}${fmt(pwpGap)}\n` +
-                          `• Sergas    : ${fmt(totalAct.sergas)} (Target: ${fmt(totalTgt.sergas)}) -> Gap: ${sergasGap >= 0 ? '+' : ''}${fmt(sergasGap)}\n` +
-                          `• Segarrrrr : ${fmt(totalAct.segarr)} (Target: ${fmt(totalTgt.segarr)}) -> Gap: ${segarrGap >= 0 ? '+' : ''}${fmt(segarrGap)}\n` +
-                          `• Ceban     : ${fmt(totalAct.ceban)} (Target: ${fmt(totalTgt.ceban)}) -> Gap: ${cebanGap >= 0 ? '+' : ''}${fmt(cebanGap)}\n` +
-                          `• New Member: ${fmt(totalAct.new_mbr)}`;
-
-        document.getElementById("eval_rincian").innerText = rincianText;
-
-        let badgeHtml = isHebat 
-            ? `<div class="eval-badge-hebat">🎖️ KASIR HEBAT (Pencapaian Di Atas Target)</div>` 
-            : `<div class="eval-badge-dodong">⚠️ KASIR DODONG (Kebanyakan GAP / Target Belum Tercapai)</div>`;
-        
-        document.getElementById("eval_badge_container").innerHTML = badgeHtml;
+        document.getElementById("eval_badge_container").innerHTML = isHebat 
+            ? `<div class="eval-badge-hebat">🎖️ KASIR HEBAT</div>` 
+            : `<div class="eval-badge-dodong">⚠️ KASIR DODONG</div>`;
         document.getElementById("evaluasiHasil").style.display = "block";
-    }
-
-    function copyWA() {
-        if (!validateTargetFilled()) return;
-        saveToMonitoring();
-        let text = document.getElementById("preview").innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert("✅ Laporan di-copy ke Clipboard & data otomatis tersimpan rapi!");
-        }).catch(err => {
-            alert("Gagal copy otomatis. Silakan select manual teks preview di atas.");
-        });
-    }
-
-    function shareToWA() {
-        if (!validateTargetFilled()) return;
-        saveToMonitoring();
-        let text = document.getElementById("preview").innerText;
-        let waUrl = "whatsapp://send?text=" + encodeURIComponent(text);
-        window.location.href = waUrl;
-    }
-
-    function exportToExcel() {
-        let dataList = JSON.parse(localStorage.getItem("pps_monitoring_data") || "[]");
-        if (dataList.length === 0) {
-            alert("Belum ada data untuk di-export!");
-            return;
-        }
-
-        let table = document.getElementById("monitoringTable").cloneNode(true);
-        let noExportEls = table.querySelectorAll('.no-export');
-        noExportEls.forEach(el => el.remove());
-
-        let tableHTML = table.outerHTML;
-        let fileDate = getDisplayDate("tgl").replace(/\//g, "-") || "Laporan";
-        let fileName = `Monitoring_PPS_${fileDate}.xls`;
-
-        let excelData = `
-            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-            <head>
-                <meta charset="utf-8">
-            </head>
-            <body>
-                ${tableHTML}
-            </body>
-            </html>
-        `;
-
-        let blob = new Blob([excelData], { type: 'application/vnd.ms-excel' });
-        let url = URL.createObjectURL(blob);
-
-        let a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }, 100);
     }
 </script>
 
