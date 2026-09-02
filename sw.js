@@ -1,5 +1,5 @@
 // UBAH NAMA/VERSI CACHE INI SETIAP KALI KAMU MELAKUKAN UPDATE KODE
-const CACHE_NAME = 'laporan-toko-v3.0';
+const CACHE_NAME = 'laporan-toko-v3.1';
 
 const ASSETS_TO_CACHE = [
     './',
