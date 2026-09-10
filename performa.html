@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Performa PPS</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0284c7">
+<style>
+    :root {
+        --primary: #0284c7; --primary-hover: #0369a1;
+        --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --text-muted: #64748b;
+        --border: #cbd5e1; --field-row-bg: #f8fafc;
+        --gold: #eab308; --silver: #94a3b8; --bronze: #b45309;
+        --good-bg: #ecfdf5; --good-border: #10b981; --good-text: #047857;
+        --warn-bg: #fef2f2; --warn-border: #ef4444; --warn-text: #b91c1c;
+    }
+    .dark-mode {
+        --primary: #38bdf8; --primary-hover: #7dd3fc;
+        --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --text-muted: #94a3b8;
+        --border: #334155; --field-row-bg: #0f172a;
+        --good-bg: rgba(16,185,129,0.1); --good-border: #10b981; --good-text: #34d399;
+        --warn-bg: rgba(239,68,68,0.1); --warn-border: #ef4444; --warn-text: #f87171;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 12px; }
+    .container { max-width: 560px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0284c7, #0f766e); color: white; padding: 14px; border-radius: 12px; margin-bottom: 12px; }
+    .header h2 { margin: 4px 0 0 0; font-size: 1.15em; }
+    .watermark { font-size: 0.75em; opacity: 0.85; font-style: italic; }
+    .btn-back { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 0.85em; }
+    .card { background: var(--card); padding: 14px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 12px; }
+    .section-title { font-weight: 700; font-size: 0.9em; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+    .sub-title { font-weight: 700; font-size: 0.82em; color: var(--text-muted); margin: 12px 0 6px; }
+    select { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--field-row-bg); color: var(--text); font-size: 0.88em; margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
+    th { background: var(--primary); color: white; padding: 6px 4px; text-align: center; font-weight: 600; }
+    td { padding: 6px 4px; text-align: center; border-bottom: 1px solid var(--border); }
+    td.nama { text-align: left; font-weight: 600; }
+    tr.rank-1 td { background: rgba(234,179,8,0.12); }
+    tr.rank-2 td { background: rgba(148,163,184,0.12); }
+    tr.rank-3 td { background: rgba(180,83,9,0.12); }
+    .rank-badge { font-weight: 800; }
+    .rank-badge.r1 { color: var(--gold); } .rank-badge.r2 { color: var(--silver); } .rank-badge.r3 { color: var(--bronze); }
+    .msg-row td { text-align: left; font-size: 0.78em; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+    .msg-good { background: var(--good-bg); color: var(--good-text); border-left: 3px solid var(--good-border); }
+    .msg-warn { background: var(--warn-bg); color: var(--warn-text); border-left: 3px solid var(--warn-border); }
+    .empty-state { text-align: center; color: var(--text-muted); padding: 20px 10px; font-size: 0.88em; }
+    .loading { text-align: center; color: var(--text-muted); padding: 20px 10px; font-size: 0.88em; }
+    textarea#filter_toko { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--field-row-bg); color: var(--text); font-size: 0.85em; margin-bottom: 8px; box-sizing: border-box; resize: vertical; font-family: inherit; }
+    input[type="file"] { width: 100%; font-size: 0.82em; margin-bottom: 8px; }
+    .btn-apply { width: 100%; background: var(--primary); color: white; border: none; padding: 9px; border-radius: 6px; font-weight: 700; font-size: 0.88em; cursor: pointer; margin-bottom: 8px; }
+    .btn-apply:hover { background: var(--primary-hover); }
+    .filter-hint { font-size: 0.76em; color: var(--text-muted); margin: -4px 0 10px; }
+    .filter-warn { font-size: 0.78em; color: var(--warn-text); background: var(--warn-bg); border-left: 3px solid var(--warn-border); padding: 6px 8px; border-radius: 4px; margin-bottom: 10px; }
+    .filter-active { font-size: 0.78em; color: var(--good-text); background: var(--good-bg); border-left: 3px solid var(--good-border); padding: 6px 8px; border-radius: 4px; margin-bottom: 10px; }
+    .btn-print { width: 100%; background: #0f766e; color: white; border: none; padding: 9px; border-radius: 6px; font-weight: 700; font-size: 0.88em; cursor: pointer; margin-top: 10px; }
+    .btn-print:hover { background: #0d5f58; }
+    input.pjudul-input { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--field-row-bg); color: var(--primary); font-size: 0.9em; font-weight: 800; margin-bottom: 8px; box-sizing: border-box; }
+    table.tbl-compact { font-size: 0.72em; }
+    table.tbl-compact th, table.tbl-compact td { padding: 3px 3px; line-height: 1.25; }
+    .print-only { display: none; }
+    @media print {
+        body { background: #ffffff; padding: 0; }
+        .no-print { display: none !important; }
+        .print-only { display: block !important; margin-bottom: 12px; }
+        .card { border: none; padding: 0; margin-bottom: 0; }
+        table { font-size: 11px; }
+        th { background: #0284c7 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        tr.msg-row { display: none; }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header no-print">
+        <div>
+            <div class="watermark">By : Qmr</div>
+            <h2>🏆 Performa PPS</h2>
+        </div>
+        <a class="btn-back" href="index.html">⬅ Kembali</a>
+    </div>
+
+    <div class="card no-print">
+        <div class="section-title">Rentang Data</div>
+        <select id="filter_periode" onchange="renderAll()">
+            <option value="7days">7 Hari Terakhir</option>
+            <option value="this_month" selected>Bulan Ini</option>
+            <option value="all">Semua Data</option>
+        </select>
+
+        <div class="sub-title" style="margin-top:2px;">📍 Filter Kode Toko (untuk Performa Toko)</div>
+        <textarea id="filter_toko" rows="2" placeholder="Contoh: R117, R017, R697, R160 (kosongkan = semua toko)"></textarea>
+        <div class="filter-hint">Pisahkan kode toko dengan koma / spasi / baris baru. Kosongkan untuk melihat semua toko. Filter ini khusus untuk tabel Performa Toko, Juara, dan Juara per Metrik di bawah (bukan untuk Data Pemenang — itu punya filter sendiri).</div>
+        <button class="btn-apply" onclick="renderAll()">🔍 Terapkan Filter</button>
+        <div id="filter_status"></div>
+
+        <div id="status_msg" class="loading">⏳ Memuat data dari server...</div>
+    </div>
+
+    <div id="pemenang-blocks-container"></div>
+    <button class="btn-apply no-print" onclick="addPemenangBlock()" style="margin-bottom:12px;">➕ Tambah Filter Pemenang Lain</button>
+
+    <div class="card no-print" id="card-toko" style="display:none;">
+        <div class="section-title">📍 Performa Semua Toko</div>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead><tr><th style="text-align:left;">Toko</th><th>PSM</th><th>PWP</th><th>SERGAS</th><th>Total PPS</th></tr></thead>
+                <tbody id="tbl-toko"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card no-print" id="card-juara" style="display:none;">
+        <div class="section-title" id="title-juara">👑 Tabel Juara PPS (Total)</div>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead><tr><th>#</th><th style="text-align:left;">Nama Kasir</th><th>Toko</th><th>PSM</th><th>PWP</th><th>SERGAS</th><th>Total</th></tr></thead>
+                <tbody id="tbl-juara"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card no-print" id="card-metrik" style="display:none;">
+        <div class="section-title">🎯 Juara per Metrik</div>
+        <div class="sub-title">🥇 Juara PSM</div>
+        <table><tbody id="tbl-psm"></tbody></table>
+        <div class="sub-title">🥇 Juara PWP</div>
+        <table><tbody id="tbl-pwp"></tbody></table>
+        <div class="sub-title">🥇 Juara SERGAS</div>
+        <table><tbody id="tbl-sergas"></tbody></table>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    // Sumber data performa PSM/PWP/SERGAS: Firebase "Laporan Toko Harian" (diisi rutin oleh staf toko).
+    // App "Laporan Shift Kasir" ini baru berjalan, jadi data historis kasir per toko
+    // ditarik dari sana sebagai acuan performa — bukan ditulis balik ke sana.
+    //
+    // Sumber data Pemenang: file Excel yang diupload manual (bisa banyak sheet,
+    // tiap sheet = 1 minggu/produk), dibaca di browser dengan library SheetJS.
+    if (localStorage.getItem('theme_kasir') === 'dark') { document.body.classList.add('dark-mode'); }
+
+    const firebaseConfig = {
+        databaseURL: "https://laporan-harian-staff-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // storeId (kode di Firebase) -> label toko, diambil dari daftar toko di index.html
+    const STORE_LABELS = {
+        R117: "MPOD/R117 (Mappaoddang)", R017: "MGKI/R017 (Malingkeri)",
+        R697: "ANDJ/R697 (Andi Djemma Mks)", R160: "BTAB/R160 (BTN Tabaria)",
+        R175: "ATO2/R175 (Andi Tonro 2)", R003: "ATRO/R003 (Andi Tonro)",
+        R465: "MPBO/R465 (Mappaoddang Bongaya)", R058: "DTAT/R058 (Daeng Tata)",
+        R277: "DGPE/R277 (Daeng Ngeppe)", R839: "OPDG/R839 (Opu Dg Risadju)",
+        R770: "MLNS/R770 (Malengkeri Mangasa)", R083: "MTHR/R083 (M Tahir)",
+        R466: "LNRP/R466 (Landak Rappocini)", R153: "BGAU/R153 (Baji Gau)",
+        R006: "LDKB/R006 (Landak Baru)", R031: "TJAG/R031 (Tanjung Alang)",
+        R334: "BODI/R334 (Bonto Duri)", R108: "CWS2/R108 (Cendrawasih 2)",
+        R540: "HTCO/R540 (Hotel Claro /F)"
+    };
+
+    let rawStoresData = null;   // cache mentah dari Firebase, difilter ulang saat rentang diganti
+    let pemenangBlockData = {}; // idx -> cache flat data pemenang blok itu, disinkronkan real-time dari Firebase ('pemenang_blocks/idx')
+                                 // Tiap blok punya file upload & node Firebase sendiri, jadi data & filter antar blok TIDAK tergabung.
+
+    function extractKasirName(crewRaw) {
+        let s = (crewRaw || "").trim();
+        if (!s) return "";
+        if (s.includes("/")) { let p = s.split("/"); return p[p.length - 1].trim(); }
+        return s;
+    }
+
+    function fmt(n) { return Math.round(n || 0).toLocaleString("id-ID"); }
+
+    function parseDateStr(str) {
+        if (!str) return null;
+        let p = str.split('/'); if (p.length !== 3) return null;
+        let d = parseInt(p[0], 10), m = parseInt(p[1], 10) - 1, y = parseInt(p[2], 10);
+        if (y < 100) y += 2000;
+        return new Date(y, m, d);
+    }
+
+    function inRange(item, startDate) {
+        if (!startDate) return true;
+        let d = parseDateStr(item.tgl);
+        return d ? d >= startDate : true;
+    }
+
+    function getStartDate() {
+        let val = document.getElementById("filter_periode").value;
+        let now = new Date();
+        if (val === "7days") { let d = new Date(); d.setDate(now.getDate() - 7); d.setHours(0,0,0,0); return d; }
+        if (val === "this_month") return new Date(now.getFullYear(), now.getMonth(), 1);
+        return null; // "all"
+    }
+
+    // Membaca daftar kode toko dari textarea filter.
+    // Return null jika kosong (artinya: tampilkan semua toko).
+    function getStoreFilter() {
+        let raw = document.getElementById("filter_toko").value || "";
+        let codes = raw.split(/[,;\n\r\t ]+/).map(s => s.trim().toUpperCase()).filter(Boolean);
+        return codes.length ? codes : null;
+    }
+
+    // Menampilkan info kode toko yang dikenali & yang tidak ditemukan di daftar toko.
+    function renderFilterStatus(codes) {
+        let el = document.getElementById("filter_status");
+        if (!codes) { el.innerHTML = ""; return; }
+        let known = Object.keys(STORE_LABELS);
+        let found = codes.filter(c => known.includes(c));
+        let notFound = codes.filter(c => !known.includes(c));
+        let html = `<div class="filter-active">✅ Menampilkan ${found.length} toko: ${found.join(", ") || "-"}</div>`;
+        if (notFound.length) {
+            html += `<div class="filter-warn">⚠️ Kode tidak ditemukan di daftar toko: ${notFound.join(", ")}</div>`;
+        }
+        el.innerHTML = html;
+    }
+
+    // Membaca file Excel pemenang UNTUK SATU BLOK (idx): bisa banyak sheet, tiap sheet
+    // dicari baris header yang mengandung kolom NIK & TOKO, lalu semua baris di bawahnya
+    // diratakan (flatten) jadi satu daftar, dengan nama sheet sebagai sumber/minggu.
+    // Hasilnya disimpan ke Firebase ('pemenang_blocks/idx') — path terpisah per blok,
+    // supaya SEMUA user yang buka halaman ini langsung melihat data yang sama TANPA
+    // data/filter antar blok (Week 1, Week 2, dst) saling tertimpa atau tergabung.
+    async function handlePemenangFileBlock(event, idx) {
+        let file = event.target.files[0];
+        if (!file) return;
+        let statusEl = document.getElementById(`pupload-status-${idx}`);
+        statusEl.innerHTML = `<div class="loading">⏳ Membaca file Excel...</div>`;
+        try {
+            let data = await file.arrayBuffer();
+            let wb = XLSX.read(data, { type: "array" });
+            let flat = [];
+            let skippedSheets = [];
+            wb.SheetNames.forEach(sheetName => {
+                let ws = wb.Sheets[sheetName];
+                let rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
+                let headerIdx = rows.findIndex(r =>
+                    r.some(c => String(c).trim().toUpperCase() === "NIK") &&
+                    r.some(c => String(c).trim().toUpperCase() === "TOKO")
+                );
+                if (headerIdx === -1) { skippedSheets.push(sheetName); return; }
+                let header = rows[headerIdx].map(c => String(c).trim().toUpperCase());
+                let col = {
+                    produk: header.indexOf("PRODUK"), nik: header.indexOf("NIK"),
+                    nama: header.indexOf("NAMA"), jabatan: header.indexOf("JABATAN"),
+                    toko: header.indexOf("TOKO")
+                };
+                for (let i = headerIdx + 1; i < rows.length; i++) {
+                    let r = rows[i];
+                    let tokoRaw = String(r[col.toko] || "").trim();
+                    if (!tokoRaw) continue; // baris kosong = akhir data sheet ini
+                    let m = tokoRaw.match(/^([A-Z0-9]+)\s*-\s*(.+)$/i);
+                    flat.push({
+                        sheet: sheetName,
+                        produk: col.produk > -1 ? String(r[col.produk] || "").trim() : "",
+                        nik: col.nik > -1 ? String(r[col.nik] || "").trim() : "",
+                        nama: col.nama > -1 ? String(r[col.nama] || "").trim() : "",
+                        jabatan: col.jabatan > -1 ? String(r[col.jabatan] || "").trim() : "",
+                        storeId: (m ? m[1] : tokoRaw).toUpperCase(),
+                        storeName: m ? m[2].trim() : tokoRaw
+                    });
+                }
+            });
+
+            if (flat.length === 0) {
+                let msg = "⚠️ Tidak ditemukan data pemenang yang sesuai format (butuh kolom NIK & Toko) di file ini.";
+                if (skippedSheets.length) msg += ` Sheet dilewati: ${skippedSheets.join(", ")}.`;
+                statusEl.innerHTML = `<div class="filter-warn">${msg}</div>`;
+                return;
+            }
+
+            statusEl.innerHTML = `<div class="loading">⏳ Menyimpan ${flat.length} baris ke server (Firebase) agar semua user bisa lihat...</div>`;
+            await database.ref(`pemenang_blocks/${idx}`).set({
+                updatedAt: Date.now(),
+                fileName: file.name,
+                rows: flat
+            });
+            // Tampilan akan otomatis ter-update lewat listener realtime listenPemenangBlockData(idx).
+            event.target.value = ""; // reset input supaya file yang sama bisa diupload ulang jika perlu
+        } catch (err) {
+            statusEl.innerHTML = `<div class="filter-warn">⚠️ Gagal membaca/menyimpan file: ${err.message}</div>`;
+        }
+    }
+
+    // Mendengarkan data pemenang SATU BLOK secara real-time dari Firebase, supaya semua
+    // user (yang sedang membuka halaman ini) langsung melihat pembaruan begitu ada yang
+    // upload — hanya untuk blok idx ini saja, tidak memengaruhi blok lain.
+    function listenPemenangBlockData(idx) {
+        database.ref(`pemenang_blocks/${idx}`).on('value', snapshot => {
+            let data = snapshot.val();
+            let rowsRaw = data && data.rows;
+            pemenangBlockData[idx] = Array.isArray(rowsRaw) ? rowsRaw : (rowsRaw ? Object.values(rowsRaw) : []);
+            let statusEl = document.getElementById(`pupload-status-${idx}`);
+            if (statusEl) {
+                if (pemenangBlockData[idx].length && data && data.updatedAt) {
+                    let waktu = new Date(data.updatedAt).toLocaleString("id-ID");
+                    statusEl.innerHTML = `<div class="filter-active">✅ ${pemenangBlockData[idx].length} baris tersinkron dari server — terakhir diupdate ${waktu} (file: ${data.fileName || "-"}).</div>`;
+                } else {
+                    statusEl.innerHTML = "";
+                }
+            }
+            renderPemenangBlock(idx);
+        }, err => {
+            let statusEl = document.getElementById(`pupload-status-${idx}`);
+            if (statusEl) statusEl.innerHTML = `<div class="filter-warn">⚠️ Gagal memuat data pemenang dari server: ${err.message}</div>`;
+        });
+    }
+
+    // ===== Blok filter Pemenang (bisa lebih dari satu, tiap blok filter & judul sendiri) =====
+    let pemenangBlockCount = 0;
+
+    function addPemenangBlock(initialTitle) {
+        pemenangBlockCount++;
+        let idx = pemenangBlockCount;
+        let div = document.createElement("div");
+        div.className = "card";
+        div.id = `pemenang-block-${idx}`;
+        div.innerHTML = `
+            <div class="no-print">
+                <input type="text" class="pjudul-input" id="pjudul-${idx}" placeholder="Judul (misal: PEMENANG PSM WEEK 3)" oninput="updatePemenangSectionTitle(${idx})">
+                <div class="sub-title" style="margin-top:2px;">📁 Upload Data Pemenang (Excel)</div>
+                <input type="file" id="pfile-${idx}" accept=".xlsx,.xls" onchange="handlePemenangFileBlock(event, ${idx})">
+                <div class="filter-hint" style="margin-top:0;">Boleh banyak sheet (tiap sheet = 1 minggu/produk, kolom Produk, NIK, Nama, Jabatan, Toko). Data blok ini terpisah dari blok lain.</div>
+                <div id="pupload-status-${idx}"></div>
+                <div class="sub-title">📍 Filter Kode Toko</div>
+                <textarea id="pfilter-${idx}" rows="2" placeholder="Kode toko: R117, R017, R697 ... (kosongkan = semua toko)"></textarea>
+                <div class="filter-hint" style="margin-top:0;">Pisahkan kode toko dengan koma / spasi / baris baru.</div>
+                <button class="btn-apply" onclick="renderPemenangBlock(${idx})">🔍 Tampilkan</button>
+                <div id="pstatus-${idx}"></div>
+            </div>
+            <div class="print-only" id="pprint-header-${idx}">
+                <h3 style="margin:0 0 6px;" id="pprint-title-${idx}"></h3>
+                <div style="font-size:0.85em;color:#333;" id="pprint-meta-${idx}"></div>
+            </div>
+            <div class="section-title" id="psection-title-${idx}">🏅 Data Pemenang</div>
+            <div style="overflow-x:auto;">
+                <table class="tbl-compact">
+                    <thead><tr><th style="text-align:left;">Sumber</th><th style="text-align:left;">Produk</th><th style="text-align:left;">Nama</th><th>NIK</th><th style="text-align:left;">Jabatan</th><th style="text-align:left;">Toko</th></tr></thead>
+                    <tbody id="tbl-pemenang-${idx}"></tbody>
+                </table>
+            </div>
+            <button class="btn-print no-print" onclick="printPemenangBlock(${idx})">🖨️ Cetak / Simpan sebagai PDF</button>
+        `;
+        document.getElementById("pemenang-blocks-container").appendChild(div);
+        if (initialTitle) {
+            document.getElementById(`pjudul-${idx}`).value = initialTitle;
+            updatePemenangSectionTitle(idx);
+        }
+        pemenangBlockData[idx] = [];
+        listenPemenangBlockData(idx); // langsung render (kosong/terisi) begitu data blok ini diketahui
+    }
+
+    function updatePemenangSectionTitle(idx) {
+        let judul = (document.getElementById(`pjudul-${idx}`).value || "").trim();
+        document.getElementById(`psection-title-${idx}`).innerText = "🏅 " + (judul || "Data Pemenang");
+    }
+
+    function getBlockStoreFilter(idx) {
+        let raw = document.getElementById(`pfilter-${idx}`).value || "";
+        let codes = raw.split(/[,;\n\r\t ]+/).map(s => s.trim().toUpperCase()).filter(Boolean);
+        return codes.length ? codes : null;
+    }
+
+    function renderPemenangBlock(idx) {
+        updatePemenangSectionTitle(idx);
+        let storeFilter = getBlockStoreFilter(idx);
+        let statusEl = document.getElementById(`pstatus-${idx}`);
+        let tbody = document.getElementById(`tbl-pemenang-${idx}`);
+        let data = pemenangBlockData[idx] || [];
+
+        if (data.length === 0) {
+            statusEl.innerHTML = "";
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Belum ada data pemenang. Upload file Excel di atas dulu.</td></tr>`;
+            return;
+        }
+
+        if (storeFilter) {
+            let known = new Set(data.map(r => r.storeId));
+            let found = storeFilter.filter(c => known.has(c));
+            let notFound = storeFilter.filter(c => !known.has(c));
+            let html = `<div class="filter-active">✅ ${found.length} toko cocok: ${found.join(", ") || "-"}</div>`;
+            if (notFound.length) html += `<div class="filter-warn">⚠️ Tidak ditemukan di data pemenang: ${notFound.join(", ")}</div>`;
+            statusEl.innerHTML = html;
+        } else {
+            statusEl.innerHTML = "";
+        }
+
+        let rows = data.filter(r => !storeFilter || storeFilter.includes(r.storeId));
+        rows = [...rows].sort((a, b) =>
+            a.storeId.localeCompare(b.storeId) || a.sheet.localeCompare(b.sheet) || a.nama.localeCompare(b.nama)
+        );
+        tbody.innerHTML = rows.length
+            ? rows.map(r =>
+                `<tr><td class="nama">${r.sheet}</td><td class="nama">${r.produk}</td><td class="nama">${r.nama}</td><td>${r.nik}</td><td style="text-align:left;">${r.jabatan}</td><td class="nama">${r.storeId} - ${r.storeName}</td></tr>`
+              ).join("")
+            : `<tr><td colspan="6" class="empty-state">Tidak ada data untuk kode toko yang difilter.</td></tr>`;
+    }
+
+    // Cetak hanya 1 blok tertentu: sembunyikan blok pemenang lain sementara saat print,
+    // lalu kembalikan seperti semula setelah dialog print ditutup.
+    function printPemenangBlock(idx) {
+        let judul = (document.getElementById(`pjudul-${idx}`).value || "").trim() || "Data Pemenang PPS";
+        let storeFilter = getBlockStoreFilter(idx);
+        let scope = storeFilter ? `Toko: ${storeFilter.join(", ")}` : "Semua Toko";
+        document.getElementById(`pprint-title-${idx}`).innerText = judul;
+        document.getElementById(`pprint-meta-${idx}`).innerText = `${scope} — dicetak ${new Date().toLocaleString("id-ID")}`;
+
+        document.querySelectorAll('[id^="pemenang-block-"]').forEach(el => {
+            if (el.id !== `pemenang-block-${idx}`) el.classList.add("no-print");
+        });
+        window.print();
+        setTimeout(() => {
+            document.querySelectorAll('[id^="pemenang-block-"]').forEach(el => el.classList.remove("no-print"));
+        }, 500);
+    }
+
+    function loadData() {
+        database.ref('stores').once('value').then(snapshot => {
+            rawStoresData = snapshot.val() || {};
+            document.getElementById("status_msg").style.display = "none";
+            renderAll();
+        }).catch(err => {
+            document.getElementById("status_msg").innerText = "⚠️ Gagal memuat data: " + err.message;
+        });
+    }
+
+    function buildFlatList(startDate, storeFilter) {
+        let flat = [];
+        Object.keys(rawStoresData).forEach(storeId => {
+            if (storeFilter && !storeFilter.includes(storeId.toUpperCase())) return; // di luar area yang difilter
+            let storeNode = rawStoresData[storeId];
+            if (!storeNode || !storeNode.reports) return;
+            Object.keys(storeNode.reports).forEach(tglKey => {
+                let shifts = storeNode.reports[tglKey];
+                Object.keys(shifts).forEach(sKey => {
+                    let item = shifts[sKey];
+                    let kasir = extractKasirName(item.crew);
+                    if (!kasir || kasir === "-") return; // shift belum diisi kasirnya
+                    if (!inRange(item, startDate)) return;
+                    flat.push({
+                        storeId: storeId, kasir: kasir,
+                        psm: item.psm_act || 0, pwp: item.pwp_act || 0, sergas: item.sergas_act || 0
+                    });
+                });
+            });
+        });
+        return flat;
+    }
+
+    function renderAll() {
+        let storeFilter = getStoreFilter();
+        renderFilterStatus(storeFilter);
+
+        if (!rawStoresData) return; // data performa toko dari Firebase belum siap
+        let startDate = getStartDate();
+        let flat = buildFlatList(startDate, storeFilter);
+
+        if (flat.length === 0) {
+            document.getElementById("card-toko").style.display = "none";
+            document.getElementById("card-juara").style.display = "none";
+            document.getElementById("card-metrik").style.display = "none";
+            document.getElementById("status_msg").style.display = "block";
+            document.getElementById("status_msg").className = "empty-state";
+            document.getElementById("status_msg").innerText = storeFilter
+                ? "Tidak ada data performa toko untuk kode toko yang difilter pada rentang ini."
+                : "Belum ada data laporan kasir pada rentang ini.";
+            return;
+        }
+        document.getElementById("status_msg").style.display = "none";
+        document.getElementById("card-toko").style.display = "block";
+        document.getElementById("card-juara").style.display = "block";
+        document.getElementById("card-metrik").style.display = "block";
+
+        renderTokoTable(flat);
+        renderJuaraTable(flat, storeFilter);
+        renderMetrikTables(flat);
+    }
+
+    function renderTokoTable(flat) {
+        let byToko = {};
+        flat.forEach(r => {
+            if (!byToko[r.storeId]) byToko[r.storeId] = { psm: 0, pwp: 0, sergas: 0 };
+            byToko[r.storeId].psm += r.psm; byToko[r.storeId].pwp += r.pwp; byToko[r.storeId].sergas += r.sergas;
+        });
+        let rows = Object.keys(byToko).map(id => {
+            let t = byToko[id];
+            return { id, label: STORE_LABELS[id] || id, ...t, total: t.psm + t.pwp + t.sergas };
+        }).sort((a, b) => b.total - a.total);
+
+        document.getElementById("tbl-toko").innerHTML = rows.map(r =>
+            `<tr><td class="nama">${r.label}</td><td>${fmt(r.psm)}</td><td>${fmt(r.pwp)}</td><td>${fmt(r.sergas)}</td><td><b>${fmt(r.total)}</b></td></tr>`
+        ).join("");
+    }
+
+    function buildKasirAgg(flat) {
+        let byKasir = {};
+        flat.forEach(r => {
+            let key = r.kasir.toUpperCase();
+            if (!byKasir[key]) byKasir[key] = { nama: r.kasir, stores: new Set(), psm: 0, pwp: 0, sergas: 0 };
+            byKasir[key].stores.add(STORE_LABELS[r.storeId] ? STORE_LABELS[r.storeId].split(" ")[0] : r.storeId);
+            byKasir[key].psm += r.psm; byKasir[key].pwp += r.pwp; byKasir[key].sergas += r.sergas;
+        });
+        return Object.values(byKasir).map(k => ({
+            ...k, toko: Array.from(k.stores).join(", "), total: k.psm + k.pwp + k.sergas
+        }));
+    }
+
+    function rankClass(i) { return i === 0 ? "rank-1" : i === 1 ? "rank-2" : i === 2 ? "rank-3" : ""; }
+    function rankBadge(i) { return i === 0 ? '<span class="rank-badge r1">🥇1</span>' : i === 1 ? '<span class="rank-badge r2">🥈2</span>' : i === 2 ? '<span class="rank-badge r3">🥉3</span>' : (i + 1); }
+
+    function renderJuaraTable(flat, storeFilter) {
+        document.getElementById("title-juara").innerText = storeFilter
+            ? "👑 Tabel Juara PPS (Area Terpilih)"
+            : "👑 Tabel Juara PPS (Total)";
+        let kasirList = buildKasirAgg(flat).sort((a, b) => b.total - a.total);
+        let n = kasirList.length;
+        let rowsHtml = kasirList.map((k, i) => {
+            let isBottom3 = n > 3 && i >= n - 3;
+            let tr = `<tr class="${rankClass(i)}"><td>${rankBadge(i)}</td><td class="nama">${k.nama}</td><td>${k.toko}</td><td>${fmt(k.psm)}</td><td>${fmt(k.pwp)}</td><td>${fmt(k.sergas)}</td><td><b>${fmt(k.total)}</b></td></tr>`;
+            if (i < 3 && n >= 3) {
+                tr += `<tr class="msg-row msg-good"><td colspan="7">🎉 ${k.nama} — PELUANG BESAR LANJUT KONTRAK</td></tr>`;
+            } else if (isBottom3) {
+                tr += `<tr class="msg-row msg-warn"><td colspan="7">⚠️ ${k.nama} — TAMBAH PERFORMA PPSMU SUPAYA STAFF PERTIMBANGKAN KELANJUTAN KARIR & KONTRAK</td></tr>`;
+            }
+            return tr;
+        }).join("");
+        document.getElementById("tbl-juara").innerHTML =
+            `<tr><th>#</th><th style="text-align:left;">Nama Kasir</th><th>Toko</th><th>PSM</th><th>PWP</th><th>SERGAS</th><th>Total</th></tr>` + rowsHtml;
+    }
+
+    function renderMetrikTable(elId, kasirList, key, label) {
+        let sorted = [...kasirList].sort((a, b) => b[key] - a[key]).slice(0, 5);
+        document.getElementById(elId).innerHTML = sorted.map((k, i) =>
+            `<tr class="${rankClass(i)}"><td style="width:30px;">${rankBadge(i)}</td><td class="nama">${k.nama} <span style="color:var(--text-muted); font-weight:400;">(${k.toko})</span></td><td style="width:60px;"><b>${fmt(k[key])}</b></td></tr>`
+        ).join("") || `<tr><td class="empty-state">Belum ada data ${label}.</td></tr>`;
+    }
+
+    function renderMetrikTables(flat) {
+        let kasirList = buildKasirAgg(flat);
+        renderMetrikTable("tbl-psm", kasirList, "psm", "PSM");
+        renderMetrikTable("tbl-pwp", kasirList, "pwp", "PWP");
+        renderMetrikTable("tbl-sergas", kasirList, "sergas", "SERGAS");
+    }
+
+    loadData();
+    addPemenangBlock("PEMENANG PSM WEEK 1");
+    addPemenangBlock("PEMENANG PSM WEEK 2");
+</script>
+</body>
+</html>
