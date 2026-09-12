@@ -198,11 +198,80 @@
         .donate-modal-body p { font-size: 0.85em; color: var(--text-muted); margin: 0 0 12px; }
         .donate-modal-body img { width: 100%; max-width: 260px; border-radius: 10px; border: 1px solid var(--border); }
         .donate-thanks { font-size: 0.78em; color: var(--text-muted); margin-top: 10px; font-style: italic; }
+
+        /* GERBANG LOGIN TOKO */
+        .login-overlay {
+            position: fixed; inset: 0; background: linear-gradient(135deg, #0f766e, #0284c7);
+            display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 16px;
+        }
+        .login-card { background: var(--card-bg); border-radius: 16px; padding: 22px 20px; width: 100%; max-width: 380px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+        .login-card h2 { margin: 0 0 4px 0; color: var(--primary); font-size: 1.2em; text-align: center; }
+        .login-card .login-sub { text-align: center; font-size: 0.8em; color: var(--text-muted); margin-bottom: 16px; }
+        .login-error { display: none; background: #fee2e2; color: #b91c1c; border: 1px solid #ef4444; border-radius: 8px; padding: 8px 10px; font-size: 0.8em; margin-bottom: 10px; font-weight: 600; }
+        .login-hint { font-size: 0.72em; color: var(--text-muted); margin-top: 6px; line-height: 1.4; }
+        .current-store-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; background: var(--accent-bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
+        .current-store-bar b { color: var(--primary); }
+        .btn-link-small { background: none; border: none; color: var(--primary); font-weight: 700; font-size: 0.78em; cursor: pointer; text-decoration: underline; padding: 4px; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<!-- GERBANG LOGIN TOKO: wajib login (kode toko + PIN) sebelum masuk ke aplikasi -->
+<div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+        <h2>🔒 Login Toko</h2>
+        <div class="login-sub">Laporan &amp; Monitoring Toko Harian</div>
+        <div id="loginErrorBox" class="login-error"></div>
+
+        <div class="form-group">
+            <label>Pilih Toko</label>
+            <select id="kode_toko" onchange="handleTokoSelectChange();">
+                <option value="CUSTOM">➕ --- TOKO CUSTOM (di luar 19 toko) ---</option>
+                <option value="R017 / SAT MALINGKERI [MGKI]">R017 - MALINGKERI [MGKI]</option>
+                <option value="R697 / SAT ANDI DJEMMA MKS [ANDJ]">R697 - ANDI DJEMMA MKS [ANDJ]</option>
+                <option value="R160 / SAT BTN TABARIA [BTAB]">R160 - BTN TABARIA [BTAB]</option>
+                <option value="R175 / SAT ANDI TONRO 2 [ATO2]">R175 - ANDI TONRO 2 [ATO2]</option>
+                <option value="R003 / SAT ANDI TONRO [ATRO]">R003 - ANDI TONRO [ATRO]</option>
+                <option value="R465 / SAT MAPPAODDANG BONGAYA [MPBO]">R465 - MAPPAODDANG BONGAYA [MPBO]</option>
+                <option value="R117 / SAT MAPPAODDANG [MPOD]">R117 - MAPPAODDANG [MPOD]</option>
+                <option value="R058 / SAT DAENG TATA [DTAT]">R058 - DAENG TATA [DTAT]</option>
+                <option value="R277 / SAT DAENG NGEPPE [DGPE]">R277 - DAENG NGEPPE [DGPE]</option>
+                <option value="R839 / SAT OPU DG RISADJU [OPDG]">R839 - OPU DG RISADJU [OPDG]</option>
+                <option value="R770 / SAT MALENGKERI MANGASA [MLNS]">R770 - MALENGKERI MANGASA [MLNS]</option>
+                <option value="R083 / SAT M TAHIR [MTHR]">R083 - M TAHIR [MTHR]</option>
+                <option value="R466 / SAT LANDAK RAPPOCINI [LNRP]">R466 - LANDAK RAPPOCINI [LNRP]</option>
+                <option value="R153 / SAT BAJI GAU [BGAU]">R153 - BAJI GAU [BGAU]</option>
+                <option value="R006 / SAT LANDAK BARU [LDKB]">R006 - LANDAK BARU [LDKB]</option>
+                <option value="R031 / SAT TANJUNG ALANG [TJAG]">R031 - TANJUNG ALANG [TJAG]</option>
+                <option value="R334 / SAT BONTO DURI [BODI]">R334 - BONTO DURI [BODI]</option>
+                <option value="R108 / SAT CENDRAWASIH 2 [CWS2]">R108 - CENDRAWASIH 2 [CWS2]</option>
+                <option value="R540 / SAT HOTEL CLARO /F [HTCO]">R540 - HOTEL CLARO /F [HTCO]</option>
+            </select>
+        </div>
+
+        <div id="custom_toko_container" style="display: none;">
+            <div class="form-group">
+                <label>Kode Toko (Misal: R999) — Wajib Diisi</label>
+                <input type="text" id="custom_kode_toko" placeholder="Kode Toko">
+            </div>
+            <div class="form-group">
+                <label>Nama Toko (Misal: SAT HOS COKRO)</label>
+                <input type="text" id="custom_nama_toko" placeholder="Nama Toko">
+            </div>
+            <div class="login-hint">Kode Toko wajib unik dan belum dipakai toko baku manapun. Toko custom akan punya data Firebase sendiri (terpisah).</div>
+        </div>
+
+        <div class="form-group" style="margin-top:10px;">
+            <label>PIN Toko</label>
+            <input type="password" id="login_pin" placeholder="Masukkan PIN Toko" inputmode="numeric">
+            <div class="login-hint" id="loginPinHint">Untuk toko baku: masukkan PIN sesuai yang sudah terdaftar di Firebase. Kalau toko ini belum pernah punya PIN, PIN yang Anda masukkan di sini akan otomatis dijadikan PIN baru.</div>
+        </div>
+
+        <button class="btn btn-primary" style="margin-top:6px;" onclick="doLoginSubmit()">🔓 Masuk</button>
+    </div>
+</div>
+
+<div class="container" id="mainAppContainer" style="display:none;">
     <div class="header-title">
         <div>
             <div class="watermark" onclick="openDevPanel()">By : Qmr</div>
@@ -266,16 +335,9 @@
                         <div class="form-group"><label>Target New Member</label><input type="text" id="t_new_mbr" placeholder="Target New Mbr" oninput="formatRupiahInput(this)"></div>
                     </div>
                     <div class="grid-2">
-                        <div class="form-group"><label>Target PWP</label><input type="text" id="t_pwp" placeholder="Target PWP" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target PSM</label><input type="text" id="t_psm" placeholder="Target PSM" oninput="formatRupiahInput(this)"></div>
-                    </div>
-                    <div class="grid-2">
-                        <div class="form-group"><label>Target Sergas</label><input type="text" id="t_sergas" placeholder="Target Sergas" oninput="formatRupiahInput(this)"></div>
-                        <div class="form-group"><label>Target Segarrrrr</label><input type="text" id="t_segarr" placeholder="Target Segarr" oninput="formatRupiahInput(this)"></div>
-                    </div>
-                    <div class="grid-2">
                         <div class="form-group"><label>Target Ceban</label><input type="text" id="t_ceban" placeholder="Target Ceban" oninput="formatRupiahInput(this)"></div>
                     </div>
+                    <div class="login-hint">🔄 Target PWP/PSM/Sergas/Segarr TIDAK diatur di sini lagi — sudah otomatis dari 🎯 Target Periodik PPS (Tab PPS) dengan carry-over gap harian, sama seperti Target BE SPD.</div>
                     <button class="btn btn-secondary" onclick="saveTargetPreset()">Simpan Target Shift ke Server</button>
                 </div>
             </details>
@@ -300,52 +362,21 @@
         <!-- FORM INPUT LAPORAN -->
         <div class="card">
             <div class="section-title">📌 Informasi Umum</div>
+
+            <!-- TOKO SUDAH TERKUNCI SESUAI LOGIN — tidak bisa dipilih manual lagi di sini -->
+            <div class="current-store-bar">
+                <div>🏪 Toko: <b id="currentStoreLabel">-</b></div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-link-small admin-only" type="button" onclick="changeStorePin()">🔑 Ganti PIN</button>
+                    <button class="btn-link-small" type="button" onclick="logoutStore()">🔁 Ganti Toko / Keluar</button>
+                </div>
+            </div>
+
             <div class="grid-2">
                 <div class="form-group">
                     <label>Tanggal</label>
                     <input type="date" id="tgl" onchange="hitung()">
                 </div>
-                <div class="form-group">
-                    <label>Pilih Toko</label>
-                    <select id="kode_toko" onchange="handleTokoSelectChange(); onKodeTokoChanged(); hitung();">
-                        <option value="CUSTOM">➕ --- INPUT TOKO LAINNYA ---</option>
-                        <option value="R017 / SAT MALINGKERI [MGKI]">R017 - MALINGKERI [MGKI]</option>
-                        <option value="R697 / SAT ANDI DJEMMA MKS [ANDJ]">R697 - ANDI DJEMMA MKS [ANDJ]</option>
-                        <option value="R160 / SAT BTN TABARIA [BTAB]">R160 - BTN TABARIA [BTAB]</option>
-                        <option value="R175 / SAT ANDI TONRO 2 [ATO2]">R175 - ANDI TONRO 2 [ATO2]</option>
-                        <option value="R003 / SAT ANDI TONRO [ATRO]">R003 - ANDI TONRO [ATRO]</option>
-                        <option value="R465 / SAT MAPPAODDANG BONGAYA [MPBO]">R465 - MAPPAODDANG BONGAYA [MPBO]</option>
-                        <option value="R117 / SAT MAPPAODDANG [MPOD]">R117 - MAPPAODDANG [MPOD]</option>
-                        <option value="R058 / SAT DAENG TATA [DTAT]">R058 - DAENG TATA [DTAT]</option>
-                        <option value="R277 / SAT DAENG NGEPPE [DGPE]">R277 - DAENG NGEPPE [DGPE]</option>
-                        <option value="R839 / SAT OPU DG RISADJU [OPDG]">R839 - OPU DG RISADJU [OPDG]</option>
-                        <option value="R770 / SAT MALENGKERI MANGASA [MLNS]">R770 - MALENGKERI MANGASA [MLNS]</option>
-                        <option value="R083 / SAT M TAHIR [MTHR]">R083 - M TAHIR [MTHR]</option>
-                        <option value="R466 / SAT LANDAK RAPPOCINI [LNRP]">R466 - LANDAK RAPPOCINI [LNRP]</option>
-                        <option value="R153 / SAT BAJI GAU [BGAU]">R153 - BAJI GAU [BGAU]</option>
-                        <option value="R006 / SAT LANDAK BARU [LDKB]">R006 - LANDAK BARU [LDKB]</option>
-                        <option value="R031 / SAT TANJUNG ALANG [TJAG]">R031 - TANJUNG ALANG [TJAG]</option>
-                        <option value="R334 / SAT BONTO DURI [BODI]">R334 - BONTO DURI [BODI]</option>
-                        <option value="R108 / SAT CENDRAWASIH 2 [CWS2]">R108 - CENDRAWASIH 2 [CWS2]</option>
-                        <option value="R540 / SAT HOTEL CLARO /F [HTCO]">R540 - HOTEL CLARO /F [HTCO]</option>
-                    </select>
-                    <button class="btn btn-secondary admin-only" type="button" style="margin-top: 6px; font-size: 0.8em; padding: 6px;" onclick="changeStorePin()">🔑 Ganti PIN Toko Ini</button>
-                </div>
-            </div>
-
-            <div id="custom_toko_container" style="display: none;">
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Kode Toko (Misal: R999) — Wajib Diisi</label>
-                        <input type="text" id="custom_kode_toko" placeholder="Kode Toko">
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Toko (Misal: SAT HOS COKRO)</label>
-                        <input type="text" id="custom_nama_toko" placeholder="Nama Toko">
-                    </div>
-                </div>
-                <button class="btn btn-primary" type="button" onclick="registerCustomStore()">➕ Daftarkan & Masuk Toko Ini</button>
-                <div style="font-size:0.75em; color:var(--text-muted); margin-top:6px;">Kode Toko wajib unik. Setelah didaftarkan, toko ini akan punya data Firebase sendiri (terpisah), tidak akan tercampur dengan toko manapun.</div>
             </div>
 
             <div class="grid-2">
@@ -367,28 +398,28 @@
             <div class="field-block">
                 <label>SPD (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_spd" placeholder="Target SPD" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_spd" class="readonly-input" readonly placeholder="Target SPD">
                     <input type="text" id="actual_spd" placeholder="Actual SPD" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
             <div class="field-block">
                 <label>STD (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_std" placeholder="Target STD" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_std" class="readonly-input" readonly placeholder="Target STD">
                     <input type="text" id="actual_std" placeholder="Actual STD" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
             <div class="field-block">
                 <label>STD Member (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_std_mbr" placeholder="Target Member" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_std_mbr" class="readonly-input" readonly placeholder="Target Member">
                     <input type="text" id="actual_std_mbr" placeholder="Actual Member" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
             <div class="field-block">
                 <label>New Member (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_new_mbr" placeholder="Target New Mbr" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_new_mbr" class="readonly-input" readonly placeholder="Target New Mbr">
                     <input type="text" id="actual_new_mbr" placeholder="Actual New Mbr" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
@@ -404,35 +435,35 @@
             <div class="field-block">
                 <label>PWP (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_pwp" placeholder="Target PWP" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_pwp" class="readonly-input" readonly placeholder="Target PWP">
                     <input type="text" id="actual_pwp" placeholder="Actual PWP" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
             <div class="field-block">
                 <label>PSM (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_psm" placeholder="Target PSM" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_psm" class="readonly-input" readonly placeholder="Target PSM">
                     <input type="text" id="actual_psm" placeholder="Actual PSM" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
             <div class="field-block">
                 <label>Sergas (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_sergas" placeholder="Target Sergas" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_sergas" class="readonly-input" readonly placeholder="Target Sergas">
                     <input type="text" id="actual_sergas" placeholder="Actual Sergas" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
             <div class="field-block">
                 <label>Segarrrrr (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_segarr" placeholder="Target Segarrrrr" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_segarr" class="readonly-input" readonly placeholder="Target Segarrrrr">
                     <input type="text" id="actual_segarr" placeholder="Actual Segarrrrr" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
             <div class="field-block">
                 <label>Ceban... (Target / Actual)</label>
                 <div class="grid-2">
-                    <input type="text" id="target_ceban" placeholder="Target Ceban" oninput="formatRupiahInput(this); hitung()">
+                    <input type="text" id="target_ceban" class="readonly-input" readonly placeholder="Target Ceban">
                     <input type="text" id="actual_ceban" placeholder="Actual Ceban" oninput="formatRupiahInput(this); hitung()">
                 </div>
             </div>
@@ -500,7 +531,7 @@
         <div class="card">
             <div class="section-title">🎯 Target Periodik PPS</div>
             <div style="font-size:0.78em; color:var(--text-muted); margin-bottom:10px;">
-                PSM dipecah per periode Tgl 1-7 / 8-15 / 16-23 / 24-akhir bulan. PWP & Sergap dipecah per periode Tgl 1-15 / 16-akhir bulan. Target hanya perlu diisi 1x di awal setiap periode — jika periode sebelumnya belum capai target, sisa gap-nya otomatis ditambahkan ke target periode berikutnya.
+                PSM dipecah per periode Tgl 1-7 / 8-15 / 16-23 / 24-akhir bulan. PWP, Sergap & Segarr dipecah per periode Tgl 1-15 / 16-akhir bulan. Target hanya perlu diisi 1x di awal setiap periode — jika periode sebelumnya belum capai target, sisa gap-nya otomatis ditambahkan ke target periode berikutnya. Target harian PSM/PWP/Sergas/Segarr di Tab Input Laporan otomatis mengikuti perhitungan ini (readonly, tidak bisa diubah manual), persis seperti Target BE SPD.
             </div>
             <div class="form-group">
                 <label>Pilih Kategori PPS</label>
@@ -508,6 +539,7 @@
                     <option value="psm">PSM</option>
                     <option value="pwp">PWP</option>
                     <option value="sergas">Sergap (Sergas)</option>
+                    <option value="segarr">Segarr</option>
                 </select>
             </div>
             <div id="ppsPeriodBox"></div>
@@ -761,7 +793,7 @@
             Kunjungi Kalkulator Sales
         </a>
     </div>
-</div>
+</div><!-- /mainAppContainer -->
 
 <!-- TOMBOL FLOATING CHAT -->
 <button class="chat-float-btn" id="chatFloatBtn" onclick="toggleChatModal()">
@@ -1129,37 +1161,6 @@
         document.getElementById("custom_toko_container").style.display = (selectVal === "CUSTOM") ? "block" : "none";
     }
 
-    // Dipanggil saat dropdown toko berganti. Untuk toko baku, langsung kunci seperti biasa.
-    // Untuk "CUSTOM", JANGAN langsung kunci (field kode/nama masih kosong) — tunggu user
-    // mengisi & menekan tombol "Daftarkan & Masuk Toko Ini", supaya tidak jatuh ke fallback toko lain.
-    function onKodeTokoChanged() {
-        let selectVal = document.getElementById("kode_toko").value;
-        if (selectVal !== "CUSTOM") {
-            lockAndSaveStore();
-        }
-    }
-
-    function registerCustomStore() {
-        let kode = getRawStr("custom_kode_toko").toUpperCase().replace(/[^a-zA-Z0-9]/g, "");
-        let nama = getRawStr("custom_nama_toko").trim();
-
-        if (!kode) { alert("⚠️ Kode Toko wajib diisi (misal: R999) agar data toko ini punya tempat sendiri di database, tidak tercampur ke toko lain!"); return; }
-        if (!nama) { alert("⚠️ Nama Toko wajib diisi!"); return; }
-
-        if (getKnownStoreCodes().includes(kode)) {
-            alert(`⚠️ Kode "${kode}" sudah dipakai oleh toko resmi di daftar dropdown. Gunakan kode lain yang unik.`);
-            return;
-        }
-
-        document.getElementById("custom_kode_toko").value = kode;
-        localStorage.setItem("custom_kode_toko_saved", kode);
-        localStorage.setItem("custom_nama_toko_saved", nama);
-
-        lockAndSaveStore().then((unlocked) => {
-            if (unlocked) alert(`✅ Toko "${kode} - ${nama}" berhasil didaftarkan/dibuka dengan data terpisah!`);
-        });
-    }
-
     function getRawStrKodeToko() {
         let el = document.getElementById("kode_toko");
         if (!el) return "R017";
@@ -1188,54 +1189,112 @@
         return clean;
     }
 
-    function lockAndSaveStore() {
+    // Dipakai HANYA oleh gerbang login (doLoginSubmit). pin wajib diisi oleh pemanggil.
+    // - Kalau toko belum punya PIN di server, pin yang dimasukkan otomatis jadi PIN baru toko itu.
+    // - Kalau toko sudah punya PIN, dicocokkan; salah -> resolve(false) tanpa alert (ditangani di UI login).
+    function lockAndSaveStore(pin) {
         let storeId = getCleanStoreId();
-        if (!storeId) {
-            alert("⚠️ Kode Toko belum diisi. Untuk Toko Custom, isi dulu Kode & Nama Toko lalu tekan tombol \"Daftarkan & Masuk Toko Ini\".");
-            return Promise.resolve(false);
-        }
-        let currentLockedStore = localStorage.getItem("locked_store_id");
-        if (currentLockedStore === storeId) {
+        if (!storeId) return Promise.resolve({ ok: false, reason: "Kode Toko belum diisi." });
+        if (!pin) return Promise.resolve({ ok: false, reason: "PIN wajib diisi." });
+
+        function finishLogin() {
+            localStorage.setItem("locked_store_id", storeId);
             localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value);
-            listenStoreMonitoring();
-            listenTargetBE();
-            listenBESpdHarian();
-            applyShiftTarget();
-            loadTargetPreset();
-            loadShiftModeSetting();
-            return Promise.resolve(true);
+            return { ok: true };
         }
+
         return database.ref(`stores/${storeId}/pin`).once('value').then((snapshot) => {
             let serverPin = snapshot.val();
             if (!serverPin) {
-                let newPin = prompt(`🔒 Toko ${storeId} belum memiliki PIN di Server.\n\nBUAT PIN BARU untuk Toko ${storeId}:`);
-                if (newPin && newPin.trim() !== "") {
-                    return database.ref(`stores/${storeId}/pin`).set(newPin.trim()).then(() => {
-                        localStorage.setItem("locked_store_id", storeId);
-                        localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value);
-                        alert(`✅ PIN Toko ${storeId} Berhasil dibuat di Server!`);
-                        listenStoreMonitoring(); listenTargetBE(); listenBESpdHarian();
-                        applyShiftTarget(); loadTargetPreset(); loadShiftModeSetting();
-                        return true;
-                    });
-                } else { revertStoreSelection(); return false; }
+                return database.ref(`stores/${storeId}/pin`).set(pin.trim()).then(() => {
+                    logVisit("Setup PIN Toko Baru + Login");
+                    return finishLogin();
+                });
+            } else if (pin === serverPin) {
+                logVisit("Masuk Toko (PIN Benar)");
+                return finishLogin();
             } else {
-                let inputPin = prompt(`🔑 Masukkan PIN Keamanan Toko ${storeId}:`);
-                if (inputPin === serverPin) {
-                    localStorage.setItem("locked_store_id", storeId);
-                    localStorage.setItem("saved_kode_toko", document.getElementById("kode_toko").value);
-                    alert(`✅ PIN Benar!`);
-                    listenStoreMonitoring(); listenTargetBE();
-                    applyShiftTarget(); loadTargetPreset(); loadShiftModeSetting();
-                    logVisit("Masuk Toko (PIN Benar)");
-                    return true;
-                } else {
-                    alert("❌ PIN Salah! Akses ditolak.");
-                    revertStoreSelection(); logVisit("Akses Toko GAGAL (PIN Salah)");
-                    return false;
-                }
+                logVisit("Akses Toko GAGAL (PIN Salah)");
+                return { ok: false, reason: "❌ PIN Salah! Akses ditolak." };
             }
-        }).catch(err => { alert("Error Server PIN: " + err.message); return false; });
+        }).catch(err => ({ ok: false, reason: "Error Server PIN: " + err.message }));
+    }
+
+    // --- GERBANG LOGIN: submit form login (toko baku atau custom) ---
+    function showLoginError(msg) {
+        let box = document.getElementById("loginErrorBox");
+        box.innerText = msg;
+        box.style.display = "block";
+    }
+    function hideLoginError() {
+        document.getElementById("loginErrorBox").style.display = "none";
+    }
+
+    function doLoginSubmit() {
+        hideLoginError();
+        let selectVal = document.getElementById("kode_toko").value;
+
+        if (selectVal === "CUSTOM") {
+            let kode = getRawStr("custom_kode_toko").toUpperCase().replace(/[^a-zA-Z0-9]/g, "");
+            let nama = getRawStr("custom_nama_toko").trim();
+            if (!kode) { showLoginError("⚠️ Kode Toko wajib diisi (misal: R999)."); return; }
+            if (!nama) { showLoginError("⚠️ Nama Toko wajib diisi!"); return; }
+            if (getKnownStoreCodes().includes(kode)) {
+                showLoginError(`⚠️ Kode "${kode}" sudah dipakai toko baku. Gunakan kode lain yang unik.`);
+                return;
+            }
+            document.getElementById("custom_kode_toko").value = kode;
+            localStorage.setItem("custom_kode_toko_saved", kode);
+            localStorage.setItem("custom_nama_toko_saved", nama);
+        }
+
+        let pin = getRawStr("login_pin");
+        if (!pin) { showLoginError("⚠️ PIN wajib diisi!"); return; }
+
+        lockAndSaveStore(pin).then((result) => {
+            if (result.ok) {
+                completeLogin();
+            } else {
+                showLoginError(result.reason || "❌ Login gagal.");
+            }
+        });
+    }
+
+    function completeLogin() {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("mainAppContainer").style.display = "";
+        updateCurrentStoreLabel();
+        listenStoreMonitoring();
+        listenTargetBE();
+        listenBESpdHarian();
+        listenGlobalChatBackground();
+        listenAreaPencapaianPPS();
+        applyShiftTarget();
+        loadTargetPreset();
+        loadShiftModeSetting();
+    }
+
+    function updateCurrentStoreLabel() {
+        let el = document.getElementById("currentStoreLabel");
+        if (!el) return;
+        let selectEl = document.getElementById("kode_toko");
+        if (selectEl.value === "CUSTOM") {
+            let kode = getRawStr("custom_kode_toko");
+            let nama = getRawStr("custom_nama_toko");
+            el.innerText = (kode || nama) ? `${kode} - ${nama}` : "-";
+        } else {
+            let opt = selectEl.options[selectEl.selectedIndex];
+            el.innerText = opt ? opt.text : (getRawStrKodeToko() || "-");
+        }
+    }
+
+    function logoutStore() {
+        if (!confirm("Keluar dari Toko ini dan kembali ke halaman Login?")) return;
+        localStorage.removeItem("locked_store_id");
+        localStorage.removeItem("saved_kode_toko");
+        localStorage.removeItem("custom_kode_toko_saved");
+        localStorage.removeItem("custom_nama_toko_saved");
+        location.reload();
     }
 
     function changeStorePin() {
@@ -1263,18 +1322,6 @@
                 alert("❌ PIN Lama Salah! Perubahan PIN ditolak.");
             }
         });
-    }
-
-    function revertStoreSelection() {
-        let previousSaved = localStorage.getItem("saved_kode_toko");
-        if (previousSaved) {
-            document.getElementById("kode_toko").value = previousSaved;
-            if (previousSaved === "CUSTOM") {
-                document.getElementById("custom_kode_toko").value = localStorage.getItem("custom_kode_toko_saved") || "";
-                document.getElementById("custom_nama_toko").value = localStorage.getItem("custom_nama_toko_saved") || "";
-            }
-            handleTokoSelectChange();
-        }
     }
 
     let devLogsRef = null;
@@ -1391,26 +1438,25 @@
         document.getElementById("search_end_tgl").value = `${yyyy}-${mmFull}-${ddFull}`;
         document.getElementById("search_start_tgl").value = `${yyyy}-${mmFull}-01`;
         
+        // GERBANG LOGIN: kalau device ini sudah pernah login & toko terkunci, langsung masuk
+        // tanpa perlu isi PIN ulang. Kalau belum, wajib login dulu lewat #loginOverlay.
+        const lockedStoreId = localStorage.getItem("locked_store_id");
         const savedKodeToko = localStorage.getItem("saved_kode_toko");
-        if (savedKodeToko) {
+        if (lockedStoreId && savedKodeToko) {
             document.getElementById("kode_toko").value = savedKodeToko;
             if (savedKodeToko === "CUSTOM") {
                 document.getElementById("custom_kode_toko").value = localStorage.getItem("custom_kode_toko_saved") || "";
                 document.getElementById("custom_nama_toko").value = localStorage.getItem("custom_nama_toko_saved") || "";
             }
             handleTokoSelectChange();
+            completeLogin();
+            logVisit("Buka Aplikasi");
+        } else {
+            document.getElementById("loginOverlay").style.display = "flex";
+            document.getElementById("mainAppContainer").style.display = "none";
         }
 
-        loadTargetPreset();
-        applyShiftTarget();
-        listenStoreMonitoring();
-        listenTargetBE();
-        listenBESpdHarian();
-        listenGlobalChatBackground();
-        listenAreaPencapaianPPS();
-        loadShiftModeSetting();
         setInterval(checkMissingShiftToday, 5 * 60 * 1000); // cek ulang tiap 5 menit (jam berjalan meski data tidak berubah)
-        logVisit("Buka Aplikasi");
     });
 
     // ================== PENCAPAIAN PPS AREA (rekap semua toko) ==================
@@ -1559,16 +1605,18 @@
         });
     }
 
+    // CATATAN: psm/pwp/sergas/segarr TIDAK lagi diisi dari sini — dipakai .update() (bukan .set())
+    // supaya nilai psm/pwp/sergas/segarr yang otomatis ditulis oleh applyPpsPeriodToShiftTargets()
+    // (dari Target Periodik PPS) tidak ikut tertimpa/terhapus.
     function saveTargetPreset() {
         const shiftNum = document.getElementById("targetShiftSelect").value;
         const targetData = {
             spd: document.getElementById("t_spd").value, std: document.getElementById("t_std").value,
             std_mbr: document.getElementById("t_std_mbr").value, new_mbr: document.getElementById("t_new_mbr").value,
-            pwp: document.getElementById("t_pwp").value, psm: document.getElementById("t_psm").value,
-            sergas: document.getElementById("t_sergas").value, segarr: document.getElementById("t_segarr").value, ceban: document.getElementById("t_ceban").value
+            ceban: document.getElementById("t_ceban").value
         };
         let storeId = getCleanStoreId();
-        database.ref(`stores/${storeId}/targets/shift_${shiftNum}`).set(targetData).then(() => {
+        database.ref(`stores/${storeId}/targets/shift_${shiftNum}`).update(targetData).then(() => {
             alert(`Target Shift ${shiftNum} Berhasil Disimpan!`); applyShiftTarget();
         });
     }
@@ -1583,13 +1631,9 @@
                 document.getElementById("t_std").value = data.std || "";
                 document.getElementById("t_std_mbr").value = data.std_mbr || "";
                 document.getElementById("t_new_mbr").value = data.new_mbr || "";
-                document.getElementById("t_pwp").value = data.pwp || "";
-                document.getElementById("t_psm").value = data.psm || "";
-                document.getElementById("t_sergas").value = data.sergas || "";
-                document.getElementById("t_segarr").value = data.segarr || "";
                 document.getElementById("t_ceban").value = data.ceban || "";
             } else {
-                ["t_spd","t_std","t_std_mbr","t_new_mbr","t_pwp","t_psm","t_sergas","t_segarr","t_ceban"].forEach(id => document.getElementById(id).value = "");
+                ["t_spd","t_std","t_std_mbr","t_new_mbr","t_ceban"].forEach(id => document.getElementById(id).value = "");
             }
         });
     }
@@ -1963,6 +2007,10 @@
         sergas: [
             { key: "H1", label: "Tgl 1-15", startDay: 1, endDay: 15 },
             { key: "H2", label: "Tgl 16-Akhir Bulan", startDay: 16, endDay: null }
+        ],
+        segarr: [
+            { key: "H1", label: "Tgl 1-15", startDay: 1, endDay: 15 },
+            { key: "H2", label: "Tgl 16-Akhir Bulan", startDay: 16, endDay: null }
         ]
     };
 
@@ -2058,7 +2106,7 @@
         let storeId = getCleanStoreId();
         if (!storeId) return;
 
-        let categories = ["psm", "pwp", "sergas"];
+        let categories = ["psm", "pwp", "sergas", "segarr"];
         let todayTargets = {};
         categories.forEach(cat => {
             let daily = computeAdjustedPpsDailyTargets(cat);
@@ -2156,7 +2204,7 @@
         let currentPeriod = getCurrentPpsPeriod(category);
         let activePeriod = periods.find(p => p.key === selectedPpsPeriodKey) || currentPeriod;
         let savedActive = getSavedPeriodEntry(category, activePeriod.key);
-        let catLabel = { psm: "PSM", pwp: "PWP", sergas: "Sergap (Sergas)" }[category];
+        let catLabel = { psm: "PSM", pwp: "PWP", sergas: "Sergap (Sergas)", segarr: "Segarr" }[category];
 
         let periodOptions = periods.map(p => `<option value="${p.key}" ${p.key === activePeriod.key ? "selected" : ""}>${p.label}${p.key === currentPeriod.key ? " (Berjalan)" : ""}</option>`).join("");
         let periodPicker = `<select id="pps_period_select" onchange="changePpsPeriodSelection(this.value)" style="margin-bottom:8px;">${periodOptions}</select>`;
