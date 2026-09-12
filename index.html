@@ -2259,8 +2259,9 @@
                             <b style="font-size:1.15em;">Rp ${fmt(effTarget)}</b>
                             ${savedActive.carryOver > 0 ? `<div style="font-size:0.72em; color:var(--text-muted);">(Input: Rp ${fmt(savedActive.inputTarget)} + Carry-over Rp ${fmt(savedActive.carryOver)} dari periode sebelumnya)</div>` : ""}
                         </div>
-                        <button class="btn btn-secondary" onclick="editTargetPeriodePps()">✏️ Ubah</button>
+                        <button class="btn btn-secondary" onclick="editTargetPeriodePps()">✏️ UBAH TARGET</button>
                     </div>
+                    <div style="font-size:0.72em; color:var(--text-muted); margin-top:6px; font-style:italic;">Target yg muncul adalah akumulasi dari target + gap kekurangan sebelumnya</div>
                     <div id="ppsPeriodEditForm" style="display:none; margin-top:10px;">
                         <div class="grid-2">
                             <input type="text" id="pps_period_target_input" placeholder="Nominal Target Baru" oninput="formatRupiahInput(this)">
