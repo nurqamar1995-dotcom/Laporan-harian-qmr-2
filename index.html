@@ -263,8 +263,8 @@
 
         <div class="form-group" style="margin-top:10px;">
             <label>PIN Toko</label>
-            <input type="password" id="login_pin" placeholder="Masukkan PIN Toko" inputmode="numeric">
-            <div class="login-hint" id="loginPinHint">Untuk toko baku: masukkan PIN sesuai yang sudah terdaftar di Firebase. Kalau toko ini belum pernah punya PIN, PIN yang Anda masukkan di sini akan otomatis dijadikan PIN baru.</div>
+            <input type="password" id="login_pin" placeholder="Masukkan PIN Toko (bisa angka/huruf)" autocomplete="off">
+            <div class="login-hint" id="loginPinHint">Untuk toko baku: masukkan PIN sesuai yang sudah terdaftar di Firebase (boleh kombinasi angka & huruf). Kalau toko ini belum pernah punya PIN, PIN yang Anda masukkan di sini akan otomatis dijadikan PIN baru.</div>
         </div>
 
         <button class="btn btn-primary" style="margin-top:6px;" onclick="doLoginSubmit()">🔓 Masuk</button>
@@ -863,6 +863,17 @@
                 </table>
             </div>
             <button class="btn btn-secondary" style="margin-top:12px;" onclick="listenDevLogs(true)">🔄 Refresh</button>
+
+            <div class="field-block" style="margin-top:16px; border-top:1px solid var(--border); padding-top:12px;">
+                <label>🔓 Reset PIN Toko (Developer Only)</label>
+                <div class="grid-2">
+                    <input type="text" id="dev_reset_kode_toko" placeholder="Kode Toko (misal: R017)">
+                    <input type="text" id="dev_reset_new_pin" placeholder="PIN Baru (angka/huruf)">
+                </div>
+                <button class="btn btn-dev-danger" onclick="devResetStorePin()">🔓 Reset PIN Toko Ini</button>
+                <div style="font-size:0.72em; color:var(--text-muted); margin-top:6px;">Langsung menimpa PIN toko di server tanpa perlu tahu PIN lama — pakai ini kalau toko lupa PIN kombinasinya. Berlaku juga untuk Toko Custom (isi kode custom-nya).</div>
+            </div>
+
             <button class="btn btn-dev-danger" onclick="changeDevPin()">🔑 Ganti PIN Developer</button>
         </div>
     </div>
@@ -1366,6 +1377,21 @@
 
     function closeDonationPanel() {
         document.getElementById("donateModalOverlay").style.display = "none";
+    }
+
+    function devResetStorePin() {
+        let kode = getRawStr("dev_reset_kode_toko").toUpperCase().replace(/[^a-zA-Z0-9]/g, "");
+        let newPin = getRawStr("dev_reset_new_pin");
+        if (!kode) { alert("⚠️ Kode Toko wajib diisi!"); return; }
+        if (!newPin) { alert("⚠️ PIN Baru wajib diisi!"); return; }
+        if (!confirm(`Reset PIN Toko ${kode} menjadi PIN baru ini?\n\nToko tersebut wajib login ulang pakai PIN baru ini di device yang belum pernah login.`)) return;
+
+        database.ref(`stores/${kode}/pin`).set(newPin.trim()).then(() => {
+            alert(`✅ PIN Toko ${kode} berhasil direset ke PIN baru!`);
+            document.getElementById("dev_reset_kode_toko").value = "";
+            document.getElementById("dev_reset_new_pin").value = "";
+            logVisit(`Reset PIN Toko ${kode} (via Panel Developer)`);
+        }).catch(err => alert("Error Server: " + err.message));
     }
 
     function changeDevPin() {
