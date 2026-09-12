@@ -395,6 +395,16 @@
             </div>
 
             <div class="section-title" style="margin-top: 15px;">📊 Target / Actual / ACV%</div>
+
+            <div class="field-block" style="border-left:4px solid var(--primary); margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <span style="font-size:0.82em; font-weight:700; color:var(--text-dark);">🔒 Semua Target Otomatis (Terkunci)</span>
+                    <button class="btn btn-secondary" type="button" style="width:auto; margin-top:0; padding:8px 14px;" id="btnUbahTargetManual" onclick="toggleUbahTargetManual()">✏️ UBAH TARGET</button>
+                </div>
+                <div style="font-size:0.72em; color:var(--text-muted); margin-top:6px; font-style:italic;">Target yg muncul adalah akumulasi dari target + gap kekurangan sebelumnya</div>
+                <button class="btn btn-primary" id="btnSimpanTargetManual" style="display:none; margin-top:10px;" onclick="simpanTargetManual()">💾 Simpan Target</button>
+            </div>
+
             <div class="field-block">
                 <label>SPD (Target / Actual)</label>
                 <div class="grid-2">
@@ -1664,6 +1674,42 @@
         });
     }
     
+    // Semua field target di Tab Input Laporan (dashboard awal) normalnya readonly/otomatis.
+    // Tombol ini membuka kunci sementara supaya admin bisa override manual, tanpa mengubah
+    // sistem otomatis-nya — begitu disimpan, field kembali terkunci seperti semula.
+    const TARGET_MANUAL_IDS = ["target_spd","target_std","target_std_mbr","target_new_mbr","target_pwp","target_psm","target_sergas","target_segarr","target_ceban"];
+    function toggleUbahTargetManual() {
+        let btn = document.getElementById("btnUbahTargetManual");
+        let btnSimpan = document.getElementById("btnSimpanTargetManual");
+        let unlocking = btn.innerText.includes("UBAH");
+        TARGET_MANUAL_IDS.forEach(id => {
+            let el = document.getElementById(id);
+            if (!el) return;
+            if (unlocking) { el.removeAttribute("readonly"); el.classList.remove("readonly-input"); }
+            else { el.setAttribute("readonly", "readonly"); el.classList.add("readonly-input"); }
+        });
+        btn.innerText = unlocking ? "🔒 Batal" : "✏️ UBAH TARGET";
+        btnSimpan.style.display = unlocking ? "block" : "none";
+    }
+
+    function simpanTargetManual() {
+        let storeId = getCleanStoreId();
+        if (!storeId) { alert("⚠️ Pilih/daftarkan Toko terlebih dahulu!"); return; }
+        let shiftNum = document.getElementById("shift").value;
+        let updateObj = {
+            spd: getRawStr("target_spd"), std: getRawStr("target_std"),
+            std_mbr: getRawStr("target_std_mbr"), new_mbr: getRawStr("target_new_mbr"),
+            pwp: getRawStr("target_pwp"), psm: getRawStr("target_psm"),
+            sergas: getRawStr("target_sergas"), segarr: getRawStr("target_segarr"),
+            ceban: getRawStr("target_ceban")
+        };
+        database.ref(`stores/${storeId}/targets/shift_${shiftNum}`).update(updateObj).then(() => {
+            alert(`✅ Target manual berhasil disimpan untuk Shift ${shiftNum}!`);
+            toggleUbahTargetManual(); // kunci kembali seperti semula
+            hitung();
+        });
+    }
+
     let currentTargetRef = null;
     function applyShiftTarget() {
         const currentShift = document.getElementById("shift").value;
